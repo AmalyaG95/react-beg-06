@@ -1,25 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import ToDo from "./ToDo/ToDo";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ToDo />
     </div>
   );
 }
 
 export default App;
+
+// 1.Սարքել նոր AddNewTask Կոմպոնենտը ,որը իր state -ում կպահի inputValue -ն
+// 2․inputValue -ի մեջ պահել AddNewTask  -ի միակ input -ի value -ն
+// 3․ToDo ից փոխանցել մի callback ,որի միջողով AddNewTask  -ի input - value -ն կփոխանցվի Todo -ի state -ի inputValue -ին և ուղղակի console.log արեք այդ արժեքը
