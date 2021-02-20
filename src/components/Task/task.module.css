@@ -1,0 +1,19 @@
+.task {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 15px;
+  margin: 5px 0;
+  width: 150px;
+  height: 30px;
+  border: 1px solid teal;
+  border-radius: 10px;
+  background-color: rgb(55, 221, 185);
+  color: white;
+  vertical-align: middle;
+}
+
+.task:hover {
+  cursor: pointer;
+  background-color: teal;
+}
