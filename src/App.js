@@ -11,6 +11,6 @@ function App() {
 
 export default App;
 
-// 1.Սարքել նոր AddNewTask Կոմպոնենտը ,որը իր state -ում կպահի inputValue -ն
-// 2․inputValue -ի մեջ պահել AddNewTask  -ի միակ input -ի value -ն
-// 3․ToDo ից փոխանցել մի callback ,որի միջողով AddNewTask  -ի input - value -ն կփոխանցվի Todo -ի state -ի inputValue -ին և ուղղակի console.log արեք այդ արժեքը
+// 1․Օգտվելով css module ներից Task  ,AddTask Component -ները սիրունացնել
+// 2․install անել react-bootstrap ,bootstrap pachkage -ները
+// 3․կարդալ ,ուսումնասիրել ` https://react-bootstrap.github.io/layout/grid/
