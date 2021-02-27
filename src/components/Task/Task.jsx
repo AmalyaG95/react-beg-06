@@ -3,11 +3,7 @@ import styles from "./task.module.css";
 const Task = (props) => {
   const { task } = props;
 
-  return (
-    <div className={styles.task}>
-      <p>{task}</p>
-    </div>
-  );
+  return <p className={styles.task}>{task}</p>;
 };
 
 export default Task;

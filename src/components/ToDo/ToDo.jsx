@@ -2,6 +2,7 @@ import React from "react";
 import Task from "../Task/Task";
 import AddTask from "../AddTask/AddTask";
 import styles from "./toDo.module.css";
+import { Container, Row, Col } from "react-bootstrap";
 
 class ToDo extends React.Component {
   state = {
@@ -9,8 +10,7 @@ class ToDo extends React.Component {
   };
 
   handleSubmit = (value) => {
-    const tasks = [...this.state.tasks];
-    tasks.push(value);
+    const tasks = [...this.state.tasks, value];
 
     this.setState({
       tasks,
@@ -18,15 +18,30 @@ class ToDo extends React.Component {
   };
 
   render() {
-    const tasksJSX = this.state.tasks.map(function (task, index) {
-      return <Task key={index} task={task} />;
+    const tasksJSX = this.state.tasks.map((task, index) => {
+      return (
+        <Col
+          key={index}
+          xs={12}
+          sm={4}
+          xl={2}
+          className="d-flex justify-content-center my-2"
+        >
+          <Task task={task} />
+        </Col>
+      );
     });
+
     return (
-      <div className={styles.ToDo}>
-        <h1 className={styles.heading1}>ToDo Component</h1>
-        <AddTask handleSubmit={this.handleSubmit} />
-        <div className={styles.tasks_wrapper}>{tasksJSX}</div>
-      </div>
+      <Container className="w-90 px-4 py-2">
+        <Row>
+          <Col>
+            <h1 className={styles.heading1}>ToDo Component</h1>
+            <AddTask handleSubmit={this.handleSubmit} />
+          </Col>
+        </Row>
+        <Row>{tasksJSX}</Row>
+      </Container>
     );
   }
 }

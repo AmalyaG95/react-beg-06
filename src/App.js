@@ -11,6 +11,6 @@ function App() {
 
 export default App;
 
-// 1․Օգտվելով css module ներից Task  ,AddTask Component -ները սիրունացնել
-// 2․install անել react-bootstrap ,bootstrap pachkage -ները
-// 3․կարդալ ,ուսումնասիրել ` https://react-bootstrap.github.io/layout/grid/
+// 1․ToDo կոմպոնենտը հավաքել  react-bootstrap Grid Component -ներով
+// 2․flex-box ը վերհիշել  ,
+// 3.Add Task գործողությունը անել նաև Enter -ի ժամանակ

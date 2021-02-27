@@ -1,22 +1,26 @@
 import React, { Component } from "react";
 import styles from "./addTask.module.css";
+import { Form, Button } from "react-bootstrap";
 
 class AddTask extends Component {
   state = {
     inputValue: "",
   };
 
-  handleChange = (event) => {
-    const { value } = event.target;
+  handleChange = (e) => {
+    const { value } = e.target;
+
     this.setState({
       inputValue: value,
     });
   };
 
-  handleS = () => {
+  handleS = ({ key, type }) => {
     const { handleSubmit } = this.props;
 
-    if (!this.state.inputValue) return;
+    if (!this.state.inputValue || (type === "keypress" && key !== "Enter"))
+      return;
+
     handleSubmit(this.state.inputValue);
     this.setState({
       inputValue: "",
@@ -27,17 +31,23 @@ class AddTask extends Component {
     return (
       <div>
         <h1 style={{ marginTop: "10px" }}>AddTask Component</h1>
+
         <div className={styles.AddTask}>
-          <input
+          <Form.Control
             type="text"
             placeholder="Add Task"
             onChange={this.handleChange}
+            onKeyPress={this.handleS}
             value={this.state.inputValue}
             className={styles.input}
           />
-          <button onClick={this.handleS} className={styles.button}>
+          <Button
+            variant="info"
+            onClick={this.handleS}
+            className={styles.button}
+          >
             Add
-          </button>
+          </Button>
         </div>
       </div>
     );
