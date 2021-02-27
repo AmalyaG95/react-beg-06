@@ -1,18 +1,21 @@
 .task {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 15px;
   width: 200px;
-  height: 50px;
+  height: 200px;
   border: 1px solid teal;
   border-radius: 10px;
   background-color: rgb(55, 221, 185);
   color: white;
-  font-size: calc(5px + 2vmin);
 }
 
 .task:hover {
   cursor: pointer;
   background-color: teal;
+}
+
+.button {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

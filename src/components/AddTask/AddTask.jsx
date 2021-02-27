@@ -29,26 +29,18 @@ class AddTask extends Component {
 
   render() {
     return (
-      <div>
-        <h1 style={{ marginTop: "10px" }}>AddTask Component</h1>
-
-        <div className={styles.AddTask}>
-          <Form.Control
-            type="text"
-            placeholder="Add Task"
-            onChange={this.handleChange}
-            onKeyPress={this.handleS}
-            value={this.state.inputValue}
-            className={styles.input}
-          />
-          <Button
-            variant="info"
-            onClick={this.handleS}
-            className={styles.button}
-          >
-            Add
-          </Button>
-        </div>
+      <div className={styles.AddTask}>
+        <Form.Control
+          type="text"
+          placeholder="Add Task"
+          onChange={this.handleChange}
+          onKeyPress={this.handleS}
+          value={this.state.inputValue}
+          className={styles.input}
+        />
+        <Button variant="info" onClick={this.handleS} className={styles.button}>
+          Add
+        </Button>
       </div>
     );
   }
