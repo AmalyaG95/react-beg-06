@@ -1,3 +1,4 @@
+import { memo } from "react";
 import styles from "./task.module.css";
 import { Card, Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,7 +17,7 @@ const Task = ({
   handleSelectTask,
   isChecked,
   isAnyChecked,
-  isAllSelected,
+  isAllChecked,
 }) => {
   const handleDelete = () => {
     handleDeleteTask(task._id);
@@ -32,7 +33,7 @@ const Task = ({
         type="checkbox"
         className={"align-self-end p-1"}
         onChange={handleSelect}
-        checked={isAllSelected || isChecked}
+        checked={isAllChecked || isChecked}
       />
       <Card.Body className={CardBodyCls.join(" ")}>
         <Card.Title style={{ fontSize: "30px" }}>{task.title}</Card.Title>
@@ -49,4 +50,4 @@ const Task = ({
   );
 };
 
-export default Task;
+export default memo(Task);

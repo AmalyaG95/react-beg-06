@@ -12,6 +12,8 @@ const delSelButtonsColCls = [
   "justify-content-center",
   "align-items-center",
   "mt-2",
+  "position-fixed",
+  styles.delSelButtons,
 ];
 
 class ToDo extends React.Component {
@@ -97,14 +99,14 @@ class ToDo extends React.Component {
     const { tasks, selectedTasksIDs } = this.state;
     const tasksJSX = tasks.map((task) => {
       return (
-        <Col key={task._id} xs={12} sm={3} xl={2} className="my-2 ">
+        <Col key={task._id} xs={6} sm={3} xl={2} className="my-2 ">
           <Task
             task={task}
             handleDeleteTask={this.handleDeleteTask}
             handleSelectTask={this.handleSelectTask}
             isChecked={selectedTasksIDs.has(task._id)}
             isAnyChecked={!!selectedTasksIDs.size}
-            isAllSelected={
+            isAllChecked={
               this.state.selectedTasksIDs.size &&
               this.state.selectedTasksIDs.size === this.state.tasks.length
             }
@@ -133,7 +135,8 @@ class ToDo extends React.Component {
           )}
         </Row>
 
-        <Row className={styles.delSelButtons}>
+        <Row className="justify-content-center">
+          {/* <Row className={styles.delSelButtons}> */}
           <Col className={delSelButtonsColCls.join(" ")}>
             <div className={styles.select}>
               <Form.Label htmlFor="selectAll" className="mr-1">

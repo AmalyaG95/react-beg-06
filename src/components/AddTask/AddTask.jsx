@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import styles from "./addTask.module.css";
 import { Form, Button } from "react-bootstrap";
 
-class AddTask extends Component {
+class AddTask extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,6 +32,8 @@ class AddTask extends Component {
 
   render() {
     const { isAnyChecked } = this.props;
+    const { inputValue } = this.state;
+
     return (
       <div className={styles.AddTask}>
         <Form.Control
@@ -50,7 +52,7 @@ class AddTask extends Component {
           // className={`${styles.button} ${
           //   isAnyChecked && styles.disabledButton
           // }`}
-          disabled={isAnyChecked}
+          disabled={isAnyChecked || !inputValue}
         >
           Add
         </Button>
