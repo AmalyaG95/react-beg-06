@@ -1,3 +1,30 @@
 .heading1 {
   font-size: calc(15px + 2vmin);
+  color: rgb(174, 191, 206);
+}
+
+.delSelButtons {
+  position: fixed;
+  padding: 5px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  background: rgba(189, 241, 226, 0.5);
+  border: 1px solid rgb(5, 112, 112);
+  border-bottom: none;
+  bottom: 0;
+  left: 35%;
+  right: 35%;
+}
+
+div.select {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  border-radius: 5px;
+  height: 38px;
+  padding: 8px 14px;
+  background-color: lightgray;
+  font-size: 1rem;
+  font-family: "Times New Roman", Times, serif;
 }

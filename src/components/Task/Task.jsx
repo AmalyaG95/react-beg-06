@@ -10,20 +10,37 @@ const CardBodyCls = [
   "justify-content-between",
 ];
 
-const Task = ({ task, handleDeleteTask }) => {
+const Task = ({
+  task,
+  handleDeleteTask,
+  handleSelectTask,
+  isChecked,
+  isAnyChecked,
+  isAllSelected,
+}) => {
   const handleDelete = () => {
     handleDeleteTask(task._id);
   };
 
+  const handleSelect = () => {
+    handleSelectTask(task._id);
+  };
+
   return (
-    <Card className={styles.task}>
+    <Card className={`${styles.task} ${isChecked && styles.selectedTask}`}>
+      <Form.Check
+        type="checkbox"
+        className={"align-self-end p-1"}
+        onChange={handleSelect}
+        checked={isAllSelected || isChecked}
+      />
       <Card.Body className={CardBodyCls.join(" ")}>
-        <Form.Check type="checkbox" className="align-self-end" />
         <Card.Title style={{ fontSize: "30px" }}>{task.title}</Card.Title>
         <Button
           variant="danger"
           onClick={handleDelete}
           className={styles.button}
+          disabled={isAnyChecked}
         >
           <FontAwesomeIcon icon={faTrash} style={{ fontSize: "15px" }} />
         </Button>

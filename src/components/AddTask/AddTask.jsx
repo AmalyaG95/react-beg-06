@@ -3,9 +3,12 @@ import styles from "./addTask.module.css";
 import { Form, Button } from "react-bootstrap";
 
 class AddTask extends Component {
-  state = {
-    inputValue: "",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputValue: "",
+    };
+  }
 
   handleChange = (e) => {
     const { value } = e.target;
@@ -28,6 +31,7 @@ class AddTask extends Component {
   };
 
   render() {
+    const { isAnyChecked } = this.props;
     return (
       <div className={styles.AddTask}>
         <Form.Control
@@ -37,8 +41,17 @@ class AddTask extends Component {
           onKeyPress={this.handleS}
           value={this.state.inputValue}
           className={styles.input}
+          disabled={isAnyChecked}
         />
-        <Button variant="info" onClick={this.handleS} className={styles.button}>
+        <Button
+          variant="info"
+          onClick={this.handleS}
+          className={styles.button}
+          // className={`${styles.button} ${
+          //   isAnyChecked && styles.disabledButton
+          // }`}
+          disabled={isAnyChecked}
+        >
           Add
         </Button>
       </div>
