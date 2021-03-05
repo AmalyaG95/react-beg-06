@@ -11,7 +11,6 @@ function App() {
 
 export default App;
 
-// Task ավելացնելուց կամ ջնջելուց անիմաստ Task Update ները կանխել
-// Օգտվել ՝
-// PureComponent
-// memo
+// 1․ Սարքում ենք Check All btn, որը կնշի բոլոր Task -երը
+// 2․ 2-րդ click -ի ժամանակ այն կհանի նշված Task -երը
+// 3. Երբ բոլորը նշված են, Check All անունը դառնա Remove Checked

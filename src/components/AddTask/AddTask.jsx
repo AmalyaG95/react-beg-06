@@ -49,9 +49,6 @@ class AddTask extends PureComponent {
           variant="info"
           onClick={this.handleS}
           className={styles.button}
-          // className={`${styles.button} ${
-          //   isAnyChecked && styles.disabledButton
-          // }`}
           disabled={isAnyChecked || !inputValue}
         >
           Add

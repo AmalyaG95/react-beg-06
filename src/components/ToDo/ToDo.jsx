@@ -136,7 +136,6 @@ class ToDo extends React.Component {
         </Row>
 
         <Row className="justify-content-center">
-          {/* <Row className={styles.delSelButtons}> */}
           <Col className={delSelButtonsColCls.join(" ")}>
             <div className={styles.select}>
               <Form.Label htmlFor="selectAll" className="mr-1">
