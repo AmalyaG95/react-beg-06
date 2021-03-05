@@ -3,8 +3,8 @@
   color: rgb(174, 191, 206);
 }
 
-.delSelButtons {
-  width: 35%;
+.delButton {
+  width: 25%;
   padding: 5px 15px;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
@@ -12,18 +12,4 @@
   border: 1px solid rgb(5, 112, 112);
   border-bottom: none;
   bottom: 0;
-}
-
-div.select {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 5px;
-  border-radius: 5px;
-  padding: 7px 14px;
-  background-color: rgb(7, 141, 141);
-  color: white;
-  font-size: 1rem;
-  line-height: 24px;
-  font-family: "Times New Roman", Times, serif;
 }

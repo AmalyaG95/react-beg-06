@@ -2,18 +2,18 @@ import React from "react";
 import Task from "../Task/Task";
 import AddTask from "../AddTask/AddTask";
 import styles from "./toDo.module.css";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import uuid from "react-uuid";
 
 const ContainerCls = ["d-flex", "flex-column", "align-content-center", "py-2"];
 
-const delSelButtonsColCls = [
+const delButtonColCls = [
   "d-flex",
   "justify-content-center",
   "align-items-center",
   "mt-2",
   "position-fixed",
-  styles.delSelButtons,
+  styles.delButton,
 ];
 
 class ToDo extends React.Component {
@@ -69,20 +69,6 @@ class ToDo extends React.Component {
     });
   };
 
-  handleSelectAllTasks = () => {
-    const selectedTasksIDs = new Set(this.state.selectedTasksIDs);
-    this.state.tasks.forEach((task) => {
-      if (!selectedTasksIDs.has(task._id)) selectedTasksIDs.add(task._id);
-    });
-
-    this.setState({
-      selectedTasksIDs:
-        this.state.selectedTasksIDs.size !== this.state.tasks.length
-          ? selectedTasksIDs
-          : new Set(),
-    });
-  };
-
   handleDeleteSelectedTasks = () => {
     const { selectedTasksIDs } = this.state;
     const tasks = [...this.state.tasks].filter(
@@ -106,10 +92,6 @@ class ToDo extends React.Component {
             handleSelectTask={this.handleSelectTask}
             isChecked={selectedTasksIDs.has(task._id)}
             isAnyChecked={!!selectedTasksIDs.size}
-            isAllChecked={
-              this.state.selectedTasksIDs.size &&
-              this.state.selectedTasksIDs.size === this.state.tasks.length
-            }
           />
         </Col>
       );
@@ -136,23 +118,7 @@ class ToDo extends React.Component {
         </Row>
 
         <Row className="justify-content-center">
-          {/* <Row className={styles.delSelButtons}> */}
-          <Col className={delSelButtonsColCls.join(" ")}>
-            <div className={styles.select}>
-              <Form.Label htmlFor="selectAll" className="mr-1">
-                Select All
-              </Form.Label>
-              <Form.Check
-                type="checkbox"
-                id="selectAll"
-                onChange={this.handleSelectAllTasks}
-                checked={
-                  this.state.tasks.length &&
-                  this.state.selectedTasksIDs.size === this.state.tasks.length
-                }
-                disabled={!this.state.tasks.length}
-              />
-            </div>
+          <Col className={delButtonColCls.join(" ")}>
             <Button
               variant="danger"
               onClick={this.handleDeleteSelectedTasks}
