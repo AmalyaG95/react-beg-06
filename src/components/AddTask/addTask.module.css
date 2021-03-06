@@ -40,3 +40,7 @@
   background-color: rgb(27, 141, 141);
   box-shadow: none;
 }
+
+.button:disabled {
+  background-color: rgb(27, 141, 141);
+}
