@@ -8,3 +8,9 @@
   align-content: center;
   font-size: calc(5px + 2vmin);
 }
+
+input[type="checkbox"] {
+  -webkit-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  transform: scale(1.5);
+}
