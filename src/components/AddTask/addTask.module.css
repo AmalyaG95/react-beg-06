@@ -41,6 +41,6 @@
   box-shadow: none;
 }
 
-/* .disabledButton:hover {
+.button:disabled {
   background-color: rgb(27, 141, 141);
-} */
+}

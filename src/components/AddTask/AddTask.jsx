@@ -47,9 +47,6 @@ class AddTask extends Component {
           variant="info"
           onClick={this.handleS}
           className={styles.button}
-          // className={`${styles.button} ${
-          //   isAnyChecked && styles.disabledButton
-          // }`}
           disabled={isAnyChecked}
         >
           Add

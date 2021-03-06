@@ -2,16 +2,17 @@ import React from "react";
 import Task from "../Task/Task";
 import AddTask from "../AddTask/AddTask";
 import styles from "./toDo.module.css";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import uuid from "react-uuid";
 
 const ContainerCls = ["d-flex", "flex-column", "align-content-center", "py-2"];
 
-const delSelButtonsColCls = [
+const delButtonColCls = [
   "d-flex",
   "justify-content-center",
   "align-items-center",
   "mt-2",
+  styles.delButton,
 ];
 
 class ToDo extends React.Component {
@@ -133,23 +134,8 @@ class ToDo extends React.Component {
           )}
         </Row>
 
-        <Row className={styles.delSelButtons}>
-          <Col className={delSelButtonsColCls.join(" ")}>
-            <div className={styles.select}>
-              <Form.Label htmlFor="selectAll" className="mr-1">
-                Select All
-              </Form.Label>
-              <Form.Check
-                type="checkbox"
-                id="selectAll"
-                onChange={this.handleSelectAllTasks}
-                checked={
-                  this.state.tasks.length &&
-                  this.state.selectedTasksIDs.size === this.state.tasks.length
-                }
-                disabled={!this.state.tasks.length}
-              />
-            </div>
+        <Row className="justify-content-center">
+          <Col className={delButtonColCls.join(" ")}>
             <Button
               variant="danger"
               onClick={this.handleDeleteSelectedTasks}
