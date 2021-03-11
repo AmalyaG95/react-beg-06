@@ -3,6 +3,7 @@ import styles from "./task.module.css";
 import { Card, Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import propTypes from "prop-types";
 
 const CardBodyCls = [
   "d-flex",
@@ -13,11 +14,11 @@ const CardBodyCls = [
 
 const Task = ({
   task,
-  handleDeleteTask,
-  handleSelectTask,
   isChecked,
   isAnyChecked,
   isAllChecked,
+  handleDeleteTask,
+  handleSelectTask,
 }) => {
   const handleDelete = () => {
     handleDeleteTask(task._id);
@@ -48,6 +49,18 @@ const Task = ({
       </Card.Body>
     </Card>
   );
+};
+
+Task.propTypes = {
+  task: propTypes.shape({
+    _id: propTypes.string.isRequired,
+    title: propTypes.string.isRequired,
+  }).isRequired,
+  isChecked: propTypes.bool.isRequired,
+  isAnyChecked: propTypes.bool.isRequired,
+  isAllChecked: propTypes.bool.isRequired,
+  handleDeleteTask: propTypes.func.isRequired,
+  handleSelectTask: propTypes.func.isRequired,
 };
 
 export default memo(Task);

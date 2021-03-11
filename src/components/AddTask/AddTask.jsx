@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import styles from "./addTask.module.css";
 import { Form, Button } from "react-bootstrap";
+import propTypes from "prop-types";
 
 class AddTask extends PureComponent {
   constructor(props) {
@@ -41,7 +42,7 @@ class AddTask extends PureComponent {
           placeholder="Add Task"
           onChange={this.handleChange}
           onKeyPress={this.handleS}
-          value={this.state.inputValue}
+          value={inputValue}
           className={styles.input}
           disabled={isAnyChecked}
         />
@@ -57,5 +58,10 @@ class AddTask extends PureComponent {
     );
   }
 }
+
+AddTask.propTypes = {
+  isAnyChecked: propTypes.bool.isRequired,
+  handleSubmit: propTypes.func.isRequired,
+};
 
 export default AddTask;

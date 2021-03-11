@@ -97,6 +97,7 @@ class ToDo extends React.Component {
 
   render() {
     const { tasks, selectedTasksIDs } = this.state;
+
     const tasksJSX = tasks.map((task) => {
       return (
         <Col key={task._id} xs={6} sm={3} xl={2} className="my-2 ">
@@ -107,8 +108,7 @@ class ToDo extends React.Component {
             isChecked={selectedTasksIDs.has(task._id)}
             isAnyChecked={!!selectedTasksIDs.size}
             isAllChecked={
-              this.state.selectedTasksIDs.size &&
-              this.state.selectedTasksIDs.size === this.state.tasks.length
+              !!selectedTasksIDs.size && selectedTasksIDs.size === tasks.length
             }
           />
         </Col>
@@ -145,11 +145,8 @@ class ToDo extends React.Component {
                 type="checkbox"
                 id="selectAll"
                 onChange={this.handleSelectAllTasks}
-                checked={
-                  this.state.tasks.length &&
-                  this.state.selectedTasksIDs.size === this.state.tasks.length
-                }
-                disabled={!this.state.tasks.length}
+                checked={tasks.length && selectedTasksIDs.size === tasks.length}
+                disabled={!tasks.length}
               />
             </div>
             <Button
