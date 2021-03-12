@@ -10,6 +10,7 @@ const CardBodyCls = [
   "flex-column",
   "align-items-center",
   "justify-content-between",
+  "m-2",
 ];
 
 const Task = ({
@@ -37,7 +38,12 @@ const Task = ({
         checked={isAllChecked || isChecked}
       />
       <Card.Body className={CardBodyCls.join(" ")}>
-        <Card.Title style={{ fontSize: "30px" }}>{task.title}</Card.Title>
+        <div>
+          <Card.Title style={{ fontSize: "30px" }}>{task.title}</Card.Title>
+          <Card.Text className={styles.description}>
+            {task.description}
+          </Card.Text>
+        </div>
         <Button
           variant="danger"
           onClick={handleDelete}

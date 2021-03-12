@@ -3,8 +3,30 @@
   color: rgb(174, 191, 206);
 }
 
+.addTaskButton {
+  border: none;
+  height: 40px;
+  margin: 20px;
+  background-color: rgb(27, 141, 141);
+  color: white;
+}
+
+.addTaskButton:hover {
+  background-color: rgb(49, 179, 179);
+}
+
+.addTaskButton:focus {
+  background-color: rgb(27, 141, 141);
+  box-shadow: none;
+}
+
+.addTaskButton:disabled {
+  background-color: rgb(27, 141, 141);
+}
+
 .delSelButtons {
   width: 35%;
+  min-width: 200px;
   padding: 5px 15px;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
