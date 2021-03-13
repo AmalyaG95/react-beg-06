@@ -34,8 +34,8 @@ class AddTaskModal extends Component {
     onSubmit(this.state);
     onHide();
     this.setState({
-      titleInput: "",
-      descriptionInput: "",
+      title: "",
+      description: "",
     });
   };
 
