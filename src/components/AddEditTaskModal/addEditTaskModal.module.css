@@ -10,25 +10,25 @@
   box-shadow: 0 0 0 0.1rem rgb(79, 173, 173);
 }
 
-.addButton,
+.addEditButton,
 .cancelButton {
   border: none;
   width: 75px;
   height: 40px;
   color: white;
 }
-.addButton {
+.addEditButton {
   background-color: rgb(27, 141, 141);
 }
 
-.addButton:hover {
+.addEditButton:hover {
   background-color: rgb(49, 179, 179);
 }
 
-.addButton:focus {
+.addEditButton:focus {
   background-color: rgb(49, 179, 179);
 }
 
-.addButton:disabled {
+.addEditButton:disabled {
   background-color: rgb(27, 141, 141);
 }

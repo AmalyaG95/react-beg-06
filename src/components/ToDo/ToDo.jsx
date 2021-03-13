@@ -3,7 +3,10 @@ import styles from "./toDo.module.css";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 import Task from "../Task/Task";
-import AddTaskModal from "../AddTaskModal/AddTaskModal";
+// import AddTaskModal from "../AddTaskModal/AddTaskModal";
+// import EditTaskModal from "../EditTaskModal/EditTaskModal";
+import AddEditTaskModal from "../AddEditTaskModal/AddEditTaskModal";
+
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 
 const ContainerCls = ["d-flex", "flex-column", "align-content-center", "py-2"];
@@ -23,25 +26,32 @@ class ToDo extends React.Component {
       {
         _id: uuid(),
         title: "Task 1 ",
-        description: "Task 1 description",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       },
       {
         _id: uuid(),
         title: "Task 2",
-        description: "Task 2 description",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       },
       {
         _id: uuid(),
         title: "Task 3",
-        description: "Task 3 description",
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       },
     ],
     selectedTasksIDs: new Set(),
-    isOpenAddTaskModal: false,
+    // isOpenAddTaskModal: false,
+    // isOpenEditTaskModal: false,
+    isOpenAddEditTaskModal: false,
     isOpenConfirmModal: false,
+    editableTask: null,
+    clickedButton: null,
   };
 
-  handleSubmit = (inputsData) => {
+  handleAddTask = (inputsData) => {
     const tasks = [...this.state.tasks];
     tasks.push({
       title: inputsData.title,
@@ -102,8 +112,30 @@ class ToDo extends React.Component {
     });
   };
 
-  toggleHideAddTaskModal = () => {
-    this.setState({ isOpenAddTaskModal: !this.state.isOpenAddTaskModal });
+  handleEditTask = (editableTask) => {
+    const tasks = [...this.state.tasks];
+    const ind = tasks.findIndex((task) => task._id === editableTask._id);
+    tasks[ind] = editableTask;
+
+    this.setState({
+      tasks,
+    });
+  };
+
+  // toggleHideAddTaskModal = () => {
+  //   this.setState({ isOpenAddTaskModal: !this.state.isOpenAddTaskModal });
+  // };
+
+  // toggleHideEditTaskModal = () => {
+  //   this.setState({
+  //     isOpenEditTaskModal: !this.state.isOpenEditTaskModal,
+  //   });
+  // };
+
+  toggleHideAddEditTaskModal = () => {
+    this.setState({
+      isOpenAddEditTaskModal: !this.state.isOpenAddEditTaskModal,
+    });
   };
 
   toggleHideConfirmModal = () => {
@@ -122,21 +154,50 @@ class ToDo extends React.Component {
     return tasks.find((task) => task._id === id);
   };
 
+  setEditableTask = (editableTask, clickedButton) => {
+    this.setState({
+      editableTask,
+      clickedButton,
+    });
+  };
+
+  handleAdd = (e) => {
+    this.toggleHideAddEditTaskModal();
+    console.log(e.currentTarget.value);
+    this.setState({
+      clickedButton: e.currentTarget.value,
+    });
+  };
+
+  removeEditableTask = () => {
+    this.setState({
+      editableTask: null,
+    });
+  };
+
   render() {
     const {
       tasks,
       selectedTasksIDs,
-      isOpenAddTaskModal,
+      editableTask,
+      clickedButton,
+      // isOpenAddTaskModal,
+      // isOpenEditTaskModal,
+      isOpenAddEditTaskModal,
       isOpenConfirmModal,
     } = this.state;
 
+    //console.log(clickedButton);
+
     const tasksJSX = tasks.map((task) => {
       return (
-        <Col key={task._id} xs={6} sm={3} xl={2} className="my-2 ">
+        <Col key={task._id} xs={6} md={4} xl={3} className="my-2 ">
           <Task
             task={task}
             handleDeleteTask={this.handleDeleteTask}
             handleSelectTask={this.handleSelectTask}
+            setEditableTask={this.setEditableTask}
+            onHide={this.toggleHideAddEditTaskModal}
             isChecked={selectedTasksIDs.has(task._id)}
             isAnyChecked={!!selectedTasksIDs.size}
             isAllChecked={
@@ -155,9 +216,10 @@ class ToDo extends React.Component {
               <h1 className={styles.heading1}>ToDo Component</h1>
               <Button
                 variant="info"
-                onClick={this.toggleHideAddTaskModal}
+                onClick={this.handleAdd}
                 className={styles.addTaskButton}
                 disabled={!!selectedTasksIDs.size}
+                value="Add Task"
               >
                 Add Task
               </Button>
@@ -199,12 +261,33 @@ class ToDo extends React.Component {
           </Row>
         </Container>
 
-        {isOpenAddTaskModal && (
+        {/* {isOpenAddTaskModal && (
           <AddTaskModal
             onSubmit={this.handleSubmit}
             onHide={this.toggleHideAddTaskModal}
           />
         )}
+
+        {isOpenAddTaskModal && (
+          <EditTaskModal
+            editableTask={editableTask}
+            onSubmit={this.handleEditTask}
+            onHide={this.toggleHideEditTaskModal}
+            removeEditableTask={this.removeEditableTask}
+          />
+        )} */}
+
+        {isOpenAddEditTaskModal && (
+          <AddEditTaskModal
+            editableTask={editableTask}
+            clickedButton={clickedButton}
+            onSubmitAddTask={this.handleAddTask}
+            onSubmitEditTask={this.handleEditTask}
+            onHide={this.toggleHideAddEditTaskModal}
+            removeEditableTask={this.removeEditableTask}
+          />
+        )}
+
         {isOpenConfirmModal && (
           <ConfirmModal
             onSubmit={this.handleDeleteSelectedTasks}

@@ -2,7 +2,7 @@ import { memo } from "react";
 import styles from "./task.module.css";
 import { Card, Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import propTypes from "prop-types";
 
 const CardBodyCls = [
@@ -10,7 +10,8 @@ const CardBodyCls = [
   "flex-column",
   "align-items-center",
   "justify-content-between",
-  "m-2",
+  "m-1",
+  "py-1",
 ];
 
 const Task = ({
@@ -20,6 +21,8 @@ const Task = ({
   isAllChecked,
   handleDeleteTask,
   handleSelectTask,
+  setEditableTask,
+  onHide,
 }) => {
   const handleDelete = () => {
     handleDeleteTask(task._id);
@@ -27,6 +30,12 @@ const Task = ({
 
   const handleSelect = () => {
     handleSelectTask(task._id);
+  };
+
+  const handleEdit = (e) => {
+    console.log(e.currentTarget.value);
+    setEditableTask(task, e.currentTarget.value);
+    onHide();
   };
 
   return (
@@ -44,14 +53,26 @@ const Task = ({
             {task.description}
           </Card.Text>
         </div>
-        <Button
-          variant="danger"
-          onClick={handleDelete}
-          className={styles.button}
-          disabled={isAnyChecked}
-        >
-          <FontAwesomeIcon icon={faTrash} style={{ fontSize: "15px" }} />
-        </Button>
+        <div className={styles.buttons}>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            className={styles.button}
+            disabled={isAnyChecked}
+          >
+            <FontAwesomeIcon icon={faTrash} style={{ fontSize: "15px" }} />
+          </Button>
+          <Button
+            variant="warning"
+            onClick={handleEdit}
+            // className="ml-3"
+            className={styles.button}
+            disabled={isAnyChecked}
+            value="edit"
+          >
+            <FontAwesomeIcon icon={faEdit} style={{ fontSize: "15px" }} />
+          </Button>
+        </div>
       </Card.Body>
     </Card>
   );
