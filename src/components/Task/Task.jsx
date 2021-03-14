@@ -33,7 +33,6 @@ const Task = ({
   };
 
   const handleEdit = (e) => {
-    console.log(e.currentTarget.value);
     setEditableTask(task, e.currentTarget.value);
     onHide();
   };
@@ -53,6 +52,7 @@ const Task = ({
             {task.description}
           </Card.Text>
         </div>
+
         <div className={styles.buttons}>
           <Button
             variant="danger"
@@ -65,10 +65,9 @@ const Task = ({
           <Button
             variant="warning"
             onClick={handleEdit}
-            // className="ml-3"
             className={styles.button}
             disabled={isAnyChecked}
-            value="edit"
+            value="Edit"
           >
             <FontAwesomeIcon icon={faEdit} style={{ fontSize: "15px" }} />
           </Button>
@@ -82,12 +81,15 @@ Task.propTypes = {
   task: propTypes.shape({
     _id: propTypes.string.isRequired,
     title: propTypes.string.isRequired,
+    description: propTypes.string.isRequired,
   }).isRequired,
   isChecked: propTypes.bool.isRequired,
   isAnyChecked: propTypes.bool.isRequired,
   isAllChecked: propTypes.bool.isRequired,
   handleDeleteTask: propTypes.func.isRequired,
   handleSelectTask: propTypes.func.isRequired,
+  setEditableTask: propTypes.func.isRequired,
+  onHide: propTypes.func.isRequired,
 };
 
 export default memo(Task);

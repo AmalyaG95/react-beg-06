@@ -3,8 +3,6 @@ import styles from "./toDo.module.css";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import uuid from "react-uuid";
 import Task from "../Task/Task";
-// import AddTaskModal from "../AddTaskModal/AddTaskModal";
-// import EditTaskModal from "../EditTaskModal/EditTaskModal";
 import AddEditTaskModal from "../AddEditTaskModal/AddEditTaskModal";
 
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
@@ -27,38 +25,39 @@ class ToDo extends React.Component {
         _id: uuid(),
         title: "Task 1 ",
         description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       },
       {
         _id: uuid(),
         title: "Task 2",
         description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       },
       {
         _id: uuid(),
         title: "Task 3",
         description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       },
     ],
     selectedTasksIDs: new Set(),
-    // isOpenAddTaskModal: false,
-    // isOpenEditTaskModal: false,
     isOpenAddEditTaskModal: false,
     isOpenConfirmModal: false,
     editableTask: null,
     clickedButton: null,
   };
 
-  handleAddTask = (inputsData) => {
+  handleSubmit = (taskData) => {
     const tasks = [...this.state.tasks];
-    tasks.push({
-      title: inputsData.title,
-      description: inputsData.description,
-      _id: uuid(),
-    });
-
+    if (this.state.clickedButton === "Add Task") {
+      tasks.push(taskData);
+    } else {
+      const ind = tasks.findIndex((task) => task._id === taskData._id);
+      tasks[ind] = taskData;
+      this.setState({
+        editableTask: null,
+      });
+    }
     this.setState({
       tasks,
     });
@@ -112,26 +111,6 @@ class ToDo extends React.Component {
     });
   };
 
-  handleEditTask = (editableTask) => {
-    const tasks = [...this.state.tasks];
-    const ind = tasks.findIndex((task) => task._id === editableTask._id);
-    tasks[ind] = editableTask;
-
-    this.setState({
-      tasks,
-    });
-  };
-
-  // toggleHideAddTaskModal = () => {
-  //   this.setState({ isOpenAddTaskModal: !this.state.isOpenAddTaskModal });
-  // };
-
-  // toggleHideEditTaskModal = () => {
-  //   this.setState({
-  //     isOpenEditTaskModal: !this.state.isOpenEditTaskModal,
-  //   });
-  // };
-
   toggleHideAddEditTaskModal = () => {
     this.setState({
       isOpenAddEditTaskModal: !this.state.isOpenAddEditTaskModal,
@@ -140,6 +119,13 @@ class ToDo extends React.Component {
 
   toggleHideConfirmModal = () => {
     this.setState({ isOpenConfirmModal: !this.state.isOpenConfirmModal });
+  };
+
+  handleAdd = (e) => {
+    this.toggleHideAddEditTaskModal();
+    this.setState({
+      clickedButton: e.currentTarget.value,
+    });
   };
 
   getSelectedSingleTask = () => {
@@ -161,33 +147,15 @@ class ToDo extends React.Component {
     });
   };
 
-  handleAdd = (e) => {
-    this.toggleHideAddEditTaskModal();
-    console.log(e.currentTarget.value);
-    this.setState({
-      clickedButton: e.currentTarget.value,
-    });
-  };
-
-  removeEditableTask = () => {
-    this.setState({
-      editableTask: null,
-    });
-  };
-
   render() {
     const {
       tasks,
       selectedTasksIDs,
       editableTask,
       clickedButton,
-      // isOpenAddTaskModal,
-      // isOpenEditTaskModal,
       isOpenAddEditTaskModal,
       isOpenConfirmModal,
     } = this.state;
-
-    //console.log(clickedButton);
 
     const tasksJSX = tasks.map((task) => {
       return (
@@ -261,30 +229,12 @@ class ToDo extends React.Component {
           </Row>
         </Container>
 
-        {/* {isOpenAddTaskModal && (
-          <AddTaskModal
-            onSubmit={this.handleSubmit}
-            onHide={this.toggleHideAddTaskModal}
-          />
-        )}
-
-        {isOpenAddTaskModal && (
-          <EditTaskModal
-            editableTask={editableTask}
-            onSubmit={this.handleEditTask}
-            onHide={this.toggleHideEditTaskModal}
-            removeEditableTask={this.removeEditableTask}
-          />
-        )} */}
-
         {isOpenAddEditTaskModal && (
           <AddEditTaskModal
             editableTask={editableTask}
             clickedButton={clickedButton}
-            onSubmitAddTask={this.handleAddTask}
-            onSubmitEditTask={this.handleEditTask}
+            onSubmit={this.handleSubmit}
             onHide={this.toggleHideAddEditTaskModal}
-            removeEditableTask={this.removeEditableTask}
           />
         )}
 
