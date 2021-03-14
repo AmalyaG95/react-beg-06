@@ -61,6 +61,7 @@ Task.propTypes = {
   task: propTypes.shape({
     _id: propTypes.string.isRequired,
     title: propTypes.string.isRequired,
+    description: propTypes.string.isRequired,
   }).isRequired,
   isChecked: propTypes.bool.isRequired,
   isAnyChecked: propTypes.bool.isRequired,
