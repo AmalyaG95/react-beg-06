@@ -32,8 +32,8 @@ const Task = ({
     handleSelectTask(task._id);
   };
 
-  const handleEdit = (e) => {
-    setEditableTask(task, e.currentTarget.value);
+  const handleEdit = () => {
+    setEditableTask(task);
     onHide();
   };
 
@@ -67,7 +67,6 @@ const Task = ({
             onClick={handleEdit}
             className={styles.button}
             disabled={isAnyChecked}
-            value="Edit"
           >
             <FontAwesomeIcon icon={faEdit} style={{ fontSize: "15px" }} />
           </Button>

@@ -44,19 +44,34 @@ class ToDo extends React.Component {
     isOpenAddEditTaskModal: false,
     isOpenConfirmModal: false,
     editableTask: null,
-    clickedButton: null,
+  };
+
+  getSelectedSingleTask = () => {
+    const { tasks, selectedTasksIDs } = this.state;
+    let id = null;
+
+    if (selectedTasksIDs.size !== 1) return;
+    selectedTasksIDs.forEach((_id) => {
+      id = _id;
+    });
+
+    return tasks.find((task) => task._id === id);
+  };
+
+  toggleSetEditableTask = (editableTask = null) => {
+    this.setState({
+      editableTask,
+    });
   };
 
   handleSubmit = (taskData) => {
     const tasks = [...this.state.tasks];
-    if (this.state.clickedButton === "Add Task") {
+    if (!this.state.editableTask) {
       tasks.push(taskData);
     } else {
       const ind = tasks.findIndex((task) => task._id === taskData._id);
       tasks[ind] = taskData;
-      this.setState({
-        editableTask: null,
-      });
+      this.toggleSetEditableTask();
     }
     this.setState({
       tasks,
@@ -88,7 +103,7 @@ class ToDo extends React.Component {
   handleSelectAllTasks = () => {
     const selectedTasksIDs = new Set(this.state.selectedTasksIDs);
     this.state.tasks.forEach((task) => {
-      if (!selectedTasksIDs.has(task._id)) selectedTasksIDs.add(task._id);
+      selectedTasksIDs.add(task._id);
     });
 
     this.setState({
@@ -115,36 +130,11 @@ class ToDo extends React.Component {
     this.setState({
       isOpenAddEditTaskModal: !this.state.isOpenAddEditTaskModal,
     });
+    if (this.state.editableTask) this.toggleSetEditableTask();
   };
 
   toggleHideConfirmModal = () => {
     this.setState({ isOpenConfirmModal: !this.state.isOpenConfirmModal });
-  };
-
-  handleAdd = (e) => {
-    this.toggleHideAddEditTaskModal();
-    this.setState({
-      clickedButton: e.currentTarget.value,
-    });
-  };
-
-  getSelectedSingleTask = () => {
-    const { tasks, selectedTasksIDs } = this.state;
-    let id = null;
-
-    if (selectedTasksIDs.size !== 1) return;
-    selectedTasksIDs.forEach((_id) => {
-      id = _id;
-    });
-
-    return tasks.find((task) => task._id === id);
-  };
-
-  setEditableTask = (editableTask, clickedButton) => {
-    this.setState({
-      editableTask,
-      clickedButton,
-    });
   };
 
   render() {
@@ -152,7 +142,6 @@ class ToDo extends React.Component {
       tasks,
       selectedTasksIDs,
       editableTask,
-      clickedButton,
       isOpenAddEditTaskModal,
       isOpenConfirmModal,
     } = this.state;
@@ -164,7 +153,7 @@ class ToDo extends React.Component {
             task={task}
             handleDeleteTask={this.handleDeleteTask}
             handleSelectTask={this.handleSelectTask}
-            setEditableTask={this.setEditableTask}
+            setEditableTask={this.toggleSetEditableTask}
             onHide={this.toggleHideAddEditTaskModal}
             isChecked={selectedTasksIDs.has(task._id)}
             isAnyChecked={!!selectedTasksIDs.size}
@@ -184,10 +173,8 @@ class ToDo extends React.Component {
               <h1 className={styles.heading1}>ToDo Component</h1>
               <Button
                 variant="info"
-                onClick={this.handleAdd}
+                onClick={this.toggleHideAddEditTaskModal}
                 className={styles.addTaskButton}
-                disabled={!!selectedTasksIDs.size}
-                value="Add Task"
               >
                 Add Task
               </Button>
@@ -232,7 +219,6 @@ class ToDo extends React.Component {
         {isOpenAddEditTaskModal && (
           <AddEditTaskModal
             editableTask={editableTask}
-            clickedButton={clickedButton}
             onSubmit={this.handleSubmit}
             onHide={this.toggleHideAddEditTaskModal}
           />

@@ -9,16 +9,13 @@ export class AddEditTaskModal extends Component {
     super(props);
     this.titleInputRef = createRef();
     this.state = {
-      title: props.clickedButton === "Add Task" ? "" : props.editableTask.title,
-      description:
-        props.clickedButton === "Add Task"
-          ? ""
-          : props.editableTask.description,
+      title: props.editableTask?.title || "",
+      description: props.editableTask?.description || "",
     };
   }
 
   handleChange = (e) => {
-    const { name, value } = e.currentTarget;
+    const { name, value } = e.target;
 
     this.setState({
       [name]: value,
@@ -26,7 +23,7 @@ export class AddEditTaskModal extends Component {
   };
 
   handleS = ({ key, type }) => {
-    const { editableTask, clickedButton, onSubmit, onHide } = this.props;
+    const { editableTask, onSubmit, onHide } = this.props;
 
     if (
       !this.state.title ||
@@ -37,7 +34,7 @@ export class AddEditTaskModal extends Component {
 
     onSubmit({
       ...this.state,
-      _id: clickedButton === "Add Task" ? uuid() : editableTask._id,
+      _id: !editableTask ? uuid() : editableTask._id,
     });
     onHide();
   };
@@ -48,7 +45,7 @@ export class AddEditTaskModal extends Component {
 
   render() {
     const { title, description } = this.state;
-    const { clickedButton, onHide } = this.props;
+    const { editableTask, onHide } = this.props;
 
     return (
       <Modal
@@ -60,12 +57,12 @@ export class AddEditTaskModal extends Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {clickedButton === "Add Task" ? "Add Task" : "Edit Task"}
+            {!editableTask ? "Add Task" : "Edit Task"}
           </Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          {clickedButton !== "Add Task" && (
+          {editableTask && (
             <Form.Label htmlFor="title" className="mb-2">
               Title
             </Form.Label>
@@ -81,7 +78,7 @@ export class AddEditTaskModal extends Component {
             className={styles.input}
           />
 
-          {clickedButton !== "Add Task" && (
+          {editableTask && (
             <Form.Label htmlFor="description" className="my-2">
               Description
             </Form.Label>
@@ -113,7 +110,7 @@ export class AddEditTaskModal extends Component {
             className={styles.addEditButton}
             disabled={!title || !description}
           >
-            {clickedButton === "Add Task" ? "Add" : "Edit"}
+            {!editableTask ? "Add" : "Edit"}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -122,10 +119,9 @@ export class AddEditTaskModal extends Component {
 }
 
 AddEditTaskModal.propTypes = {
-  clickedButton: propTypes.string.isRequired,
   editableTask: propTypes.oneOfType([
     propTypes.object.isRequired,
-    propTypes.instanceOf(null),
+    propTypes.instanceOf(null).isRequired,
   ]),
   onSubmit: propTypes.func.isRequired,
   onHide: propTypes.func.isRequired,
