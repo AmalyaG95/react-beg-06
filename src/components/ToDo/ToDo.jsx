@@ -1,11 +1,12 @@
 import React from "react";
 import styles from "./toDo.module.css";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
-import uuid from "react-uuid";
 import Task from "../Task/Task";
 import AddEditTaskModal from "../AddEditTaskModal/AddEditTaskModal";
 
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
+
+const API_HOST = "http://localhost:3001";
 
 const ContainerCls = ["d-flex", "flex-column", "align-content-center", "py-2"];
 
@@ -20,42 +21,22 @@ const delSelButtonsColCls = [
 
 class ToDo extends React.Component {
   state = {
-    tasks: [
-      {
-        _id: uuid(),
-        title: "Task 1 ",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      },
-      {
-        _id: uuid(),
-        title: "Task 2",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      },
-      {
-        _id: uuid(),
-        title: "Task 3",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      },
-    ],
+    tasks: [],
     selectedTasksIDs: new Set(),
     isOpenAddEditTaskModal: false,
     isOpenConfirmModal: false,
     editableTask: null,
   };
 
-  getSelectedSingleTask = () => {
-    const { tasks, selectedTasksIDs } = this.state;
-    let id = null;
-
-    if (selectedTasksIDs.size !== 1) return;
-    selectedTasksIDs.forEach((_id) => {
-      id = _id;
+  toggleHideAddEditTaskModal = () => {
+    this.setState({
+      isOpenAddEditTaskModal: !this.state.isOpenAddEditTaskModal,
     });
+    if (this.state.editableTask) this.toggleSetEditableTask();
+  };
 
-    return tasks.find((task) => task._id === id);
+  toggleHideConfirmModal = () => {
+    this.setState({ isOpenConfirmModal: !this.state.isOpenConfirmModal });
   };
 
   toggleSetEditableTask = (editableTask = null) => {
@@ -64,30 +45,83 @@ class ToDo extends React.Component {
     });
   };
 
-  handleSubmit = (taskData) => {
+  handleAddTask = (newTaskData) => {
     const tasks = [...this.state.tasks];
-    if (!this.state.editableTask) {
-      tasks.push(taskData);
-    } else {
-      const ind = tasks.findIndex((task) => task._id === taskData._id);
-      tasks[ind] = taskData;
-      this.toggleSetEditableTask();
-    }
-    this.setState({
-      tasks,
-    });
+    fetch(`${API_HOST}/task`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(newTaskData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw data.error;
+        }
+
+        tasks.push(data);
+        this.setState({
+          tasks,
+        });
+      })
+      .catch((error) => {
+        console.log("Add a task Error", error);
+      });
+  };
+
+  handleEditTask = (editableTaskData) => {
+    const tasks = [...this.state.tasks];
+
+    fetch(`${API_HOST}/task/${this.state.editableTask._id}`, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(editableTaskData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw data.error;
+        }
+
+        const ind = tasks.findIndex((task) => task._id === data._id);
+
+        this.toggleSetEditableTask();
+        tasks[ind] = data;
+        this.setState({
+          tasks,
+        });
+      })
+      .catch((error) => {
+        console.log("Edit a task Error", error);
+      });
   };
 
   handleDeleteTask = (_id) => {
-    const tasks = [...this.state.tasks].filter((task) => task._id !== _id);
+    fetch(`${API_HOST}/task/${_id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw data.error;
+        }
+        const tasks = [...this.state.tasks].filter((task) => task._id !== _id);
 
-    this.setState({
-      tasks,
-    });
+        this.setState({
+          tasks,
+        });
+      })
+      .catch((error) => {
+        console.log("Delete a task Error", error);
+      });
   };
 
   handleSelectTask = (_id) => {
     const selectedTasksIDs = new Set(this.state.selectedTasksIDs);
+
     if (selectedTasksIDs.has(_id)) {
       selectedTasksIDs.delete(_id);
       this.handleSelectAllTasks();
@@ -102,6 +136,7 @@ class ToDo extends React.Component {
 
   handleSelectAllTasks = () => {
     const selectedTasksIDs = new Set(this.state.selectedTasksIDs);
+
     this.state.tasks.forEach((task) => {
       selectedTasksIDs.add(task._id);
     });
@@ -114,27 +149,63 @@ class ToDo extends React.Component {
     });
   };
 
+  getSelectedSingleTask = () => {
+    const { tasks, selectedTasksIDs } = this.state;
+    let id = null;
+
+    if (selectedTasksIDs.size !== 1) return;
+    selectedTasksIDs.forEach((_id) => {
+      id = _id;
+    });
+
+    return tasks.find((task) => task._id === id);
+  };
+
   handleDeleteSelectedTasks = () => {
     const { selectedTasksIDs } = this.state;
-    const tasks = [...this.state.tasks].filter(
-      (task) => !selectedTasksIDs.has(task._id)
-    );
 
-    this.setState({
-      tasks,
-      selectedTasksIDs: new Set(),
-    });
+    fetch(`${API_HOST}/task`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ tasks: Array.from(selectedTasksIDs) }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw data.error;
+        }
+
+        const tasks = [...this.state.tasks].filter(
+          (task) => !selectedTasksIDs.has(task._id)
+        );
+
+        this.setState({
+          tasks,
+          selectedTasksIDs: new Set(),
+        });
+      })
+      .catch((error) => {
+        console.log("Delete selected tasks Error", error);
+      });
   };
 
-  toggleHideAddEditTaskModal = () => {
-    this.setState({
-      isOpenAddEditTaskModal: !this.state.isOpenAddEditTaskModal,
-    });
-    if (this.state.editableTask) this.toggleSetEditableTask();
-  };
+  componentDidMount = () => {
+    fetch(`${API_HOST}/task`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw data.error;
+        }
 
-  toggleHideConfirmModal = () => {
-    this.setState({ isOpenConfirmModal: !this.state.isOpenConfirmModal });
+        this.setState({
+          tasks: data,
+        });
+      })
+      .catch((error) => {
+        console.log("Get all tasks Error", error);
+      });
   };
 
   render() {
@@ -219,7 +290,7 @@ class ToDo extends React.Component {
         {isOpenAddEditTaskModal && (
           <AddEditTaskModal
             editableTask={editableTask}
-            onSubmit={this.handleSubmit}
+            onSubmit={editableTask ? this.handleEditTask : this.handleAddTask}
             onHide={this.toggleHideAddEditTaskModal}
           />
         )}

@@ -1,8 +1,9 @@
 import React, { Component, createRef } from "react";
 import styles from "./addEditTaskModal.module.css";
 import { Modal, Button, Form } from "react-bootstrap";
-import uuid from "react-uuid";
 import propTypes from "prop-types";
+import DatePicker from "react-datepicker";
+import formatDate from "../../utils/formatDate";
 
 export class AddEditTaskModal extends Component {
   constructor(props) {
@@ -11,8 +12,15 @@ export class AddEditTaskModal extends Component {
     this.state = {
       title: props.editableTask?.title || "",
       description: props.editableTask?.description || "",
+      date: props.editableTask ? new Date(props.editableTask.date) : new Date(),
     };
   }
+
+  handleChangeDate = (e) => {
+    this.setState({
+      date: e,
+    });
+  };
 
   handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,19 +31,13 @@ export class AddEditTaskModal extends Component {
   };
 
   handleS = ({ key, type }) => {
-    const { editableTask, onSubmit, onHide } = this.props;
+    const { title, description, date } = this.state;
+    const { onSubmit, onHide } = this.props;
 
-    if (
-      !this.state.title ||
-      !this.state.description ||
-      (type === "keypress" && key !== "Enter")
-    )
+    if (!title || !description || (type === "keypress" && key !== "Enter"))
       return;
 
-    onSubmit({
-      ...this.state,
-      _id: !editableTask ? uuid() : editableTask._id,
-    });
+    onSubmit({ ...this.state, date: formatDate(date) });
     onHide();
   };
 
@@ -44,7 +46,7 @@ export class AddEditTaskModal extends Component {
   }
 
   render() {
-    const { title, description } = this.state;
+    const { title, description, date } = this.state;
     const { editableTask, onHide } = this.props;
 
     return (
@@ -77,7 +79,6 @@ export class AddEditTaskModal extends Component {
             value={title}
             className={styles.input}
           />
-
           {editableTask && (
             <Form.Label htmlFor="description" className="my-2">
               Description
@@ -94,6 +95,7 @@ export class AddEditTaskModal extends Component {
             className={styles.input}
             style={{ resize: "none" }}
           />
+          <DatePicker selected={date} onChange={this.handleChangeDate} />
         </Modal.Body>
 
         <Modal.Footer>

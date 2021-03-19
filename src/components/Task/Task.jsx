@@ -46,10 +46,13 @@ const Task = ({
         checked={isAllChecked || isChecked}
       />
       <Card.Body className={CardBodyCls.join(" ")}>
-        <div>
+        <div style={{ width: "100%" }}>
           <Card.Title style={{ fontSize: "30px" }}>{task.title}</Card.Title>
           <Card.Text className={styles.description}>
             {task.description}
+          </Card.Text>
+          <Card.Text className={styles.date}>
+            Date: {task.date.slice(0, 10)}
           </Card.Text>
         </div>
 
@@ -78,9 +81,9 @@ const Task = ({
 
 Task.propTypes = {
   task: propTypes.shape({
-    _id: propTypes.string.isRequired,
     title: propTypes.string.isRequired,
     description: propTypes.string.isRequired,
+    date: propTypes.string.isRequired,
   }).isRequired,
   isChecked: propTypes.bool.isRequired,
   isAnyChecked: propTypes.bool.isRequired,

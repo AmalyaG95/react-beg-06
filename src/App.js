@@ -1,16 +1,16 @@
 import "./App.css";
 import ToDo from "./components/ToDo/ToDo";
-import "./JS/async";
 
 function App() {
   return (
     <div className="App">
-      {" "}
-      <ToDo />{" "}
+      <ToDo />
     </div>
   );
 }
 
 export default App;
 
-// Միավորել AddTaskModal, EditTaskModal Կոմպոնենտները մեկում
+// 1. Add Task, Get Tasks, Edit Task, Delete Task, Delete any Tasks
+// գործողությունները կատարել հարցումների միջոցով և backend-ի հետ աշխատելով։
+// 2. Օգտագործել միայն react-datepicker գրադարանը
