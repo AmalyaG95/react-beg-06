@@ -1,8 +1,3 @@
-.heading1 {
-  font-size: calc(15px + 2vmin);
-  color: rgb(174, 191, 206);
-}
-
 .addTaskButton {
   border: none;
   height: 40px;

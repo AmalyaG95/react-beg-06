@@ -1,14 +1,14 @@
 import React from "react";
 import styles from "./toDo.module.css";
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
-import Task from "../Task/Task";
-import AddEditTaskModal from "../AddEditTaskModal/AddEditTaskModal";
+import Task from "../../Task/Task";
+import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
 
-import ConfirmModal from "../ConfirmModal/ConfirmModal";
+import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 
 const API_HOST = "http://localhost:3001";
 
-const ContainerCls = ["d-flex", "flex-column", "align-content-center", "py-2"];
+const ContainerCls = ["d-flex", "flex-column", "align-content-center", "py-4"];
 
 const delSelButtonsColCls = [
   "d-flex",
@@ -241,7 +241,6 @@ class ToDo extends React.Component {
         <Container className={ContainerCls.join(" ")}>
           <Row>
             <Col>
-              <h1 className={styles.heading1}>ToDo Component</h1>
               <Button
                 variant="info"
                 onClick={this.toggleHideAddEditTaskModal}

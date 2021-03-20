@@ -14,3 +14,8 @@ input[type="checkbox"] {
   -ms-transform: scale(1.5);
   transform: scale(1.5);
 }
+
+h1 {
+  font-size: calc(15px + 2vmin);
+  color: rgb(162, 175, 187);
+}

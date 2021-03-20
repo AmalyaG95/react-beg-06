@@ -1,0 +1,26 @@
+.Nav {
+  background-color: rgb(242, 247, 242);
+}
+
+.NavLink {
+  background-color: honeydew;
+  color: rgb(27, 141, 141);
+  text-decoration: none;
+  font-size: 23px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.NavLink:hover {
+  background-color: rgb(220, 250, 220);
+  color: rgb(27, 141, 141);
+  text-decoration: none;
+  font-size: 23px;
+}
+
+.NavLink:focus {
+  outline: none;
+}
+
+.activeNavLink {
+  background-color: rgb(220, 250, 220);
+}
