@@ -1,15 +1,13 @@
 import React from "react";
 import styles from "./toDo.module.css";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import Task from "../../Task/Task";
 import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
 
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 
 const API_HOST = "http://localhost:3001";
-
-const ContainerCls = ["d-flex", "flex-column", "align-content-center", "py-4"];
-
+const ContainerCls = ["d-flex ", "flex-column", "align-content-center", "py-4"];
 const delSelButtonsColCls = [
   "d-flex",
   "justify-content-center",
@@ -18,6 +16,7 @@ const delSelButtonsColCls = [
   "position-fixed",
   styles.delSelButtons,
 ];
+const noTasksCls = ["align-self-center mt-5", styles.noTasks];
 
 class ToDo extends React.Component {
   state = {
@@ -219,7 +218,11 @@ class ToDo extends React.Component {
 
     const tasksJSX = tasks.map((task) => {
       return (
-        <Col key={task._id} xs={6} md={4} xl={3} className="my-2 ">
+        <Col
+          key={task._id}
+          xs={12}
+          className="d-flex my-2 justify-content-center"
+        >
           <Task
             task={task}
             handleDeleteTask={this.handleDeleteTask}
@@ -238,7 +241,7 @@ class ToDo extends React.Component {
 
     return (
       <>
-        <Container className={ContainerCls.join(" ")}>
+        <Container className={ContainerCls}>
           <Row>
             <Col>
               <Button
@@ -251,21 +254,21 @@ class ToDo extends React.Component {
             </Col>
           </Row>
 
-          <Row className="mt-1 mb-5">
+          <Row className="mt-1 mb-5 justify-content-center">
             {tasksJSX.length ? (
               tasksJSX
             ) : (
-              <Col className="align-self-center mt-5">NO TASKS !</Col>
+              <Col className={noTasksCls.join(" ")}>NO TASKS !</Col>
             )}
           </Row>
 
           <Row className="justify-content-center">
             <Col className={delSelButtonsColCls.join(" ")}>
               <div className={styles.select}>
-                <Form.Label htmlFor="selectAll" className="mr-2">
+                <label htmlFor="selectAll" className="mr-2">
                   Select All
-                </Form.Label>
-                <Form.Check
+                </label>
+                <input
                   type="checkbox"
                   id="selectAll"
                   onChange={this.handleSelectAllTasks}

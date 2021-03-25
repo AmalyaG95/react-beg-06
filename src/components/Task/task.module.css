@@ -1,6 +1,7 @@
 .task {
-  width: 100%;
-  min-height: 350px;
+  width: 500px;
+  min-width: 500px;
+  height: 70px;
   border: 1px solid teal;
   border-radius: 10px;
   background-color: rgb(55, 221, 185);
@@ -8,7 +9,6 @@
 }
 
 .task:hover {
-  cursor: pointer;
   background-color: teal;
 }
 
@@ -17,32 +17,33 @@
   background-color: rgb(125, 238, 214);
 }
 
-.description,
-.date {
-  margin-bottom: 20px;
-  padding: 10px 0;
-  font-size: 18px;
-  line-height: 20px;
-  text-align: justify;
-}
-
-.date {
-  position: absolute;
-  bottom: 80px;
-  text-align: left;
-  padding: 20px 0 0;
-}
-
-.buttons {
-  display: flex;
-  margin: 20px 0;
-}
-
-.button {
+.deleteButton,
+.editButton {
   width: 35px;
   height: 35px;
   margin-left: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.deleteButton {
+  background-color: white;
+}
+
+.editButton {
+  background-color: rgb(35, 155, 133);
+}
+
+.Link {
+  font-size: 25px;
+  margin-left: 10px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.Link:hover {
+  color: white;
+  text-decoration: none;
 }

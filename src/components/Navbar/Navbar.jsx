@@ -2,46 +2,42 @@ import { Nav } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import styles from "./navbar.module.css";
 
-const NavLinkCls = ["py-3", "px-5", styles.NavLink];
-const NavCls = ["my-3", "justify-content-center", styles.Nav];
+const NavCls = ["m-3", "justify-content-start", styles.Nav];
+const NavItemCls = ["py-2", styles.NavItem];
+const NavLinkCls = ["py-2", "px-4", styles.NavLink];
+
+const navItems = [
+  {
+    to: "/",
+    value: "Home",
+  },
+  {
+    to: "/contact",
+    value: "Contact",
+  },
+  {
+    to: "/about",
+    value: "About",
+  },
+];
 
 const Navbar = () => {
-  return (
-    <Nav className={NavCls.join(" ")}>
-      <Nav.Item className="py-3 px-5">
+  const navItemsJSX = navItems.map((navItem, index) => {
+    return (
+      <Nav.Item key={index} className={NavItemCls}>
         <NavLink
-          to="/"
-          activeClassName={styles.activeNavLink}
+          to={navItem.to}
           className={NavLinkCls.join(" ")}
-          exact
+          activeClassName={styles.activeNavLink}
+          exact={true}
         >
-          Home
+          {navItem.value}
         </NavLink>
       </Nav.Item>
+    );
+  });
 
-      <Nav.Item className="py-3 px-5">
-        <NavLink
-          to="/contact"
-          activeClassName={styles.activeNavLink}
-          className={NavLinkCls.join(" ")}
-          exact
-        >
-          Contact
-        </NavLink>
-      </Nav.Item>
-
-      <Nav.Item className="py-3 px-5">
-        <NavLink
-          to="/about"
-          activeClassName={styles.activeNavLink}
-          className={NavLinkCls.join(" ")}
-          exact
-        >
-          About
-        </NavLink>
-      </Nav.Item>
-    </Nav>
-  );
+  return <Nav className={NavCls.join(" ")}>{navItemsJSX}</Nav>;
 };
 
 export default Navbar;

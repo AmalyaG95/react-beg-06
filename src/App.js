@@ -3,26 +3,66 @@ import "./App.css";
 import ToDo from "./components/pages/ToDo/ToDo";
 import Contact from "./components/pages/Contact/Contact";
 import About from "./components/pages/About/About";
+import NotFound from "./components/pages/NotFound/NotFound";
+import SingleTask from "./components/pages/SingleTask/SingleTask";
 import Navbar from "./components/Navbar/Navbar";
 
+const pages = [
+  {
+    path: "/",
+    component: ToDo,
+    exact: true,
+  },
+  {
+    path: "/contact",
+    component: Contact,
+    exact: true,
+  },
+  {
+    path: "/about",
+    component: About,
+    exact: true,
+  },
+  {
+    path: "/task/:id",
+    component: SingleTask,
+    exact: true,
+  },
+  {
+    path: "/404",
+    component: NotFound,
+    exact: true,
+  },
+];
+
 function App() {
+  const pagesJSX = pages.map((page, index) => {
+    return (
+      <Route
+        key={index}
+        path={page.path}
+        component={page.component}
+        exact={page.exact}
+      />
+    );
+  });
+
   return (
     <div className="App">
-      <Navbar />
-      <Switch>
-        <Route path="/" component={ToDo} exact />
-        <Route path="/contact" component={Contact} exact />
-        <Route path="/about" component={About} exact />
-        <Redirect to="/" />
-      </Switch>
+      <header>
+        <Navbar />
+      </header>
+      <main>
+        <Switch>
+          {pagesJSX}
+          <Redirect to="/404" />
+        </Switch>
+      </main>
     </div>
   );
 }
 
 export default App;
 
-// 1․Սարքում ենք Navbar- ը Home, About, Contact Անդամներով,
-// 2․Ունենում ենք 3 էջ` Todo, Contact, About
-// 3.Ամեն անդամի հասցեի url  դաշտում երևալու դեպքում՝ փոխել տվյալ Nav անդամի սթայլը(NavLink , Link)
-// 4.Nav- ի անդամներին click- ների ժամանակ ,գնում է իր հասցեին համապատասխան էջը(Switch , Route)
-// 5․Անհայտ հասցեի ներմուծման դեպքում ՝ գնալ home էջ
+// 1. SingleTask Էջում սարքել Delete button-ով Task-ը ջնջելու հատկություն, որից հետո կտեղափոխվենք Home
+// 2․ Գրել propTypes երը բոլոր նոր էջերի համար

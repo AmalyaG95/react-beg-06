@@ -1,7 +1,10 @@
 .App {
   text-align: center;
   width: 100%;
-  background-color: #76dbc0;
+  background-image: url("./assets/images/todo.png");
+  background-size: 65%;
+  background-attachment: fixed;
+  background-repeat: repeat;
   min-height: 100vh;
   display: flex;
   flex-flow: column wrap;
@@ -9,13 +12,26 @@
   font-size: calc(5px + 2vmin);
 }
 
+header {
+  background-color: rgb(243, 252, 249);
+  width: 100%;
+  padding: 0 15px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
 input[type="checkbox"] {
-  -webkit-transform: scale(1.5);
-  -ms-transform: scale(1.5);
-  transform: scale(1.5);
+  border: 2px solid black;
+  width: 20px;
+  height: 20px;
+  margin: 0 0 0 10px;
 }
 
 h1 {
   font-size: calc(15px + 2vmin);
-  color: rgb(162, 175, 187);
+  color: rgb(255, 255, 255);
+  font-weight: 800;
 }

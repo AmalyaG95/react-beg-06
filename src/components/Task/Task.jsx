@@ -1,17 +1,16 @@
 import { memo } from "react";
 import styles from "./task.module.css";
-import { Card, Form, Button } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import propTypes from "prop-types";
 
 const CardBodyCls = [
   "d-flex",
-  "flex-column",
   "align-items-center",
   "justify-content-between",
   "m-1",
-  "py-1",
 ];
 
 const Task = ({
@@ -39,36 +38,31 @@ const Task = ({
 
   return (
     <Card className={`${styles.task} ${isChecked && styles.selectedTask}`}>
-      <Form.Check
-        type="checkbox"
-        className={"align-self-end p-1"}
-        onChange={handleSelect}
-        checked={isAllChecked || isChecked}
-      />
       <Card.Body className={CardBodyCls.join(" ")}>
-        <div style={{ width: "100%" }}>
-          <Card.Title style={{ fontSize: "30px" }}>{task.title}</Card.Title>
-          <Card.Text className={styles.description}>
-            {task.description}
-          </Card.Text>
-          <Card.Text className={styles.date}>
-            Date: {task.date.slice(0, 10)}
-          </Card.Text>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <input
+            type="checkbox"
+            onChange={handleSelect}
+            checked={isAllChecked || isChecked}
+          />
+          <Link to={`/task/${task._id}`} className={styles.Link}>
+            {task.title}
+          </Link>
         </div>
 
-        <div className={styles.buttons}>
+        <div style={{ display: "flex" }}>
           <Button
-            variant="danger"
+            variant="light"
             onClick={handleDelete}
-            className={styles.button}
+            className={styles.deleteButton}
             disabled={isAnyChecked}
           >
             <FontAwesomeIcon icon={faTrash} style={{ fontSize: "15px" }} />
           </Button>
           <Button
-            variant="warning"
+            variant="light"
             onClick={handleEdit}
-            className={styles.button}
+            className={styles.editButton}
             disabled={isAnyChecked}
           >
             <FontAwesomeIcon icon={faEdit} style={{ fontSize: "15px" }} />
