@@ -1,5 +1,5 @@
 import styles from "./notFound.module.css";
-import notFound from "../../../assets/images/404.png";
+import notFound from "../../../assets/images/page404.png";
 import { Container, Row, Col } from "react-bootstrap";
 
 const NotFound = () => {

@@ -32,13 +32,16 @@ export class AddEditTaskModal extends Component {
 
   handleS = ({ key, type }) => {
     const { title, description, date } = this.state;
-    const { onSubmit, onHide } = this.props;
+    const { onSubmit } = this.props;
 
-    if (!title || !description || (type === "keypress" && key !== "Enter"))
+    if (
+      !title.trim() ||
+      !description.trim() ||
+      (type === "keypress" && key !== "Enter")
+    )
       return;
 
     onSubmit({ ...this.state, date: formatDate(date) });
-    onHide();
   };
 
   componentDidMount() {
@@ -110,7 +113,7 @@ export class AddEditTaskModal extends Component {
             variant="info"
             onClick={this.handleS}
             className={styles.addEditButton}
-            disabled={!title || !description}
+            disabled={!title.trim() || !description.trim()}
           >
             {!editableTask ? "Add" : "Edit"}
           </Button>

@@ -2,7 +2,9 @@ import React from "react";
 import styles from "./singleTask.module.css";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import Spinner from "../../Spinner/Spinner";
+import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
 import propTypes from "prop-types";
 
 const API_HOST = "http://localhost:3001";
@@ -24,10 +26,22 @@ const CardBodyCls = [
 class SingleTask extends React.Component {
   state = {
     singleTask: null,
+    loading: false,
+    isEditable: false,
+  };
+
+  toggleHideAddEditTaskModal = () => {
+    this.setState({
+      isEditable: !this.state.isEditable,
+    });
   };
 
   handleDelete = () => {
     const { id } = this.props.match.params;
+
+    this.setState({
+      loading: true,
+    });
 
     fetch(`${API_HOST}/task/${id}`, {
       method: "DELETE",
@@ -41,7 +55,48 @@ class SingleTask extends React.Component {
       })
       .catch((error) => {
         console.log("Delete the single task Error", error);
+        this.setState({
+          loading: false,
+        });
       });
+  };
+
+  handleEdit = (editableTask) => {
+    const { singleTask } = this.state;
+
+    this.setState({
+      loading: true,
+    });
+    fetch(`${API_HOST}/task/${singleTask._id}`, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(editableTask),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          throw data.error;
+        }
+
+        this.setState({
+          singleTask: data,
+        });
+      })
+      .catch((error) => {
+        console.log("Edit the single task Error", error);
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+          isEditable: false,
+        });
+      });
+  };
+
+  goBack = () => {
+    this.props.history.goBack();
   };
 
   componentDidMount() {
@@ -56,53 +111,87 @@ class SingleTask extends React.Component {
         });
       })
       .catch((error) => {
-        console.log("Single Task Get Request ", error);
+        console.log("Single task get Error ", error);
+        this.props.history.push(`${API_HOST}/404`);
       });
   }
 
   render() {
-    const { singleTask } = this.state;
+    const { singleTask, loading, isEditable } = this.state;
 
-    if (!singleTask)
-      return (
-        <Container className={ContainerCls}>
-          <Row>
-            <Col>
-              <p className={styles.loading}>Loading...</p>
-            </Col>
-          </Row>
-        </Container>
-      );
     return (
-      <Container className={ContainerCls}>
-        <Card className={styles.singleTaskSection}>
-          <Card.Body className={CardBodyCls.join(" ")}>
-            <Card.Title
-              style={{
-                fontSize: "30px",
-                fontWeight: "600",
-              }}
-            >
-              {singleTask.title}
-            </Card.Title>
-            <Card.Text className={styles.description}>
-              {singleTask.description}
-            </Card.Text>
-            <Card.Text className={styles.date}>
-              Date: {singleTask.date.slice(0, 10).split("-").join(".")}
-            </Card.Text>
-            <Card.Footer className="d-flex">
-              <Button
-                variant="light"
-                onClick={this.handleDelete}
-                className={styles.deleteButton}
-              >
-                <FontAwesomeIcon icon={faTrash} style={{ fontSize: "15px" }} />
-              </Button>
-            </Card.Footer>
-          </Card.Body>
-        </Card>
-      </Container>
+      <>
+        {!singleTask ? (
+          <Spinner />
+        ) : (
+          <Container className={ContainerCls}>
+            <Row className={styles.singleTaskSection}>
+              <Col>
+                <Card className={styles.card}>
+                  <Card.Body className={CardBodyCls.join(" ")}>
+                    <Card.Title
+                      style={{
+                        fontSize: "30px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {singleTask.title}
+                    </Card.Title>
+                    <Card.Text className={styles.description}>
+                      {singleTask.description}
+                    </Card.Text>
+                    <Card.Text className={styles.date}>
+                      Date: {singleTask.date.slice(0, 10).split("-").join(".")}
+                    </Card.Text>
+                    <Card.Footer className="d-flex">
+                      <Button
+                        variant="light"
+                        onClick={this.handleDelete}
+                        className={styles.deleteButton}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          style={{ fontSize: "15px" }}
+                        />
+                      </Button>
+                      <Button
+                        variant="light"
+                        onClick={this.toggleHideAddEditTaskModal}
+                        className={styles.editButton}
+                      >
+                        <FontAwesomeIcon
+                          icon={faEdit}
+                          style={{ fontSize: "15px" }}
+                        />
+                      </Button>
+                    </Card.Footer>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col>
+                <Button
+                  variant="secondary"
+                  onClick={this.goBack}
+                  style={{ marginTop: "20px" }}
+                >
+                  Go Back
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        )}
+        {isEditable && (
+          <AddEditTaskModal
+            editableTask={singleTask}
+            onSubmit={this.handleEdit}
+            onHide={this.toggleHideAddEditTaskModal}
+          />
+        )}
+        {loading && <Spinner />}
+      </>
     );
   }
 }

@@ -4,6 +4,7 @@ import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import DeleteSpinner from "../DeleteSpinner/DeleteSpinner";
 import propTypes from "prop-types";
 
 const CardBodyCls = [
@@ -18,6 +19,7 @@ const Task = ({
   isChecked,
   isAnyChecked,
   isAllChecked,
+  deleteLoading,
   handleDeleteTask,
   handleSelectTask,
   setEditableTask,
@@ -37,39 +39,45 @@ const Task = ({
   };
 
   return (
-    <Card className={`${styles.task} ${isChecked && styles.selectedTask}`}>
-      <Card.Body className={CardBodyCls.join(" ")}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <input
-            type="checkbox"
-            onChange={handleSelect}
-            checked={isAllChecked || isChecked}
-          />
-          <Link to={`/task/${task._id}`} className={styles.Link}>
-            {task.title}
-          </Link>
-        </div>
+    <>
+      {deleteLoading ? (
+        <DeleteSpinner />
+      ) : (
+        <Card className={`${styles.task} ${isChecked && styles.selectedTask}`}>
+          <Card.Body className={CardBodyCls.join(" ")}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <input
+                type="checkbox"
+                onChange={handleSelect}
+                checked={isAllChecked || isChecked}
+              />
+              <Link to={`/task/${task._id}`} className={styles.Link}>
+                {task.title}
+              </Link>
+            </div>
 
-        <div style={{ display: "flex" }}>
-          <Button
-            variant="light"
-            onClick={handleDelete}
-            className={styles.deleteButton}
-            disabled={isAnyChecked}
-          >
-            <FontAwesomeIcon icon={faTrash} style={{ fontSize: "15px" }} />
-          </Button>
-          <Button
-            variant="light"
-            onClick={handleEdit}
-            className={styles.editButton}
-            disabled={isAnyChecked}
-          >
-            <FontAwesomeIcon icon={faEdit} style={{ fontSize: "15px" }} />
-          </Button>
-        </div>
-      </Card.Body>
-    </Card>
+            <div style={{ display: "flex" }}>
+              <Button
+                variant="light"
+                onClick={handleDelete}
+                className={styles.deleteButton}
+                disabled={isAnyChecked}
+              >
+                <FontAwesomeIcon icon={faTrash} style={{ fontSize: "15px" }} />
+              </Button>
+              <Button
+                variant="light"
+                onClick={handleEdit}
+                className={styles.editButton}
+                disabled={isAnyChecked}
+              >
+                <FontAwesomeIcon icon={faEdit} style={{ fontSize: "15px" }} />
+              </Button>
+            </div>
+          </Card.Body>
+        </Card>
+      )}
+    </>
   );
 };
 
@@ -82,6 +90,7 @@ Task.propTypes = {
   isChecked: propTypes.bool.isRequired,
   isAnyChecked: propTypes.bool.isRequired,
   isAllChecked: propTypes.bool.isRequired,
+  deleteLoading: propTypes.bool.isRequired,
   handleDeleteTask: propTypes.func.isRequired,
   handleSelectTask: propTypes.func.isRequired,
   setEditableTask: propTypes.func.isRequired,

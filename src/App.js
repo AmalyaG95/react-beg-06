@@ -64,5 +64,7 @@ function App() {
 
 export default App;
 
-// 1. SingleTask Էջում սարքել Delete button-ով Task-ը ջնջելու հատկություն, որից հետո կտեղափոխվենք Home
-// 2․ Գրել propTypes երը բոլոր նոր էջերի համար
+// 1.Add Task, Delete Task, Edit Task, Get Tasks, Delete Any Tasks  Գործողությունները
+// կատարել Loading -ով
+// 2.GoBack կնոպկա, SingleTask  կոմպոնենտի մեջ
+// 3․Երբ task_id ով task գոյություն չունի, գցել 404  էջ

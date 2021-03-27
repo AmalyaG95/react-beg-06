@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   width: 100%;
+  background-color: rgb(118, 219, 192);
   background-image: url("./assets/images/todo.png");
   background-size: 65%;
   background-attachment: fixed;

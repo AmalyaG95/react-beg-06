@@ -3,6 +3,7 @@ import styles from "./toDo.module.css";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import Task from "../../Task/Task";
 import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
+import Spinner from "../../Spinner/Spinner";
 
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 
@@ -25,6 +26,8 @@ class ToDo extends React.Component {
     isOpenAddEditTaskModal: false,
     isOpenConfirmModal: false,
     editableTask: null,
+    loading: false,
+    deletableTaskId: "",
   };
 
   toggleHideAddEditTaskModal = () => {
@@ -46,6 +49,10 @@ class ToDo extends React.Component {
 
   handleAddTask = (newTaskData) => {
     const tasks = [...this.state.tasks];
+
+    this.setState({
+      loading: true,
+    });
     fetch(`${API_HOST}/task`, {
       method: "POST",
       headers: {
@@ -66,12 +73,21 @@ class ToDo extends React.Component {
       })
       .catch((error) => {
         console.log("Add a task Error", error);
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
+        this.toggleHideAddEditTaskModal();
       });
   };
 
   handleEditTask = (editableTaskData) => {
     const tasks = [...this.state.tasks];
 
+    this.setState({
+      loading: true,
+    });
     fetch(`${API_HOST}/task/${this.state.editableTask._id}`, {
       method: "PUT",
       headers: {
@@ -95,10 +111,19 @@ class ToDo extends React.Component {
       })
       .catch((error) => {
         console.log("Edit a task Error", error);
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
+        this.toggleHideAddEditTaskModal();
       });
   };
 
   handleDeleteTask = (_id) => {
+    this.setState({
+      deletableTaskId: _id,
+    });
     fetch(`${API_HOST}/task/${_id}`, {
       method: "DELETE",
     })
@@ -115,6 +140,11 @@ class ToDo extends React.Component {
       })
       .catch((error) => {
         console.log("Delete a task Error", error);
+      })
+      .finally(() => {
+        this.setState({
+          deletableTaskId: "",
+        });
       });
   };
 
@@ -163,6 +193,9 @@ class ToDo extends React.Component {
   handleDeleteSelectedTasks = () => {
     const { selectedTasksIDs } = this.state;
 
+    this.setState({
+      loading: true,
+    });
     fetch(`${API_HOST}/task`, {
       method: "PATCH",
       headers: {
@@ -187,10 +220,18 @@ class ToDo extends React.Component {
       })
       .catch((error) => {
         console.log("Delete selected tasks Error", error);
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
       });
   };
 
   componentDidMount = () => {
+    this.setState({
+      loading: true,
+    });
     fetch(`${API_HOST}/task`)
       .then((res) => res.json())
       .then((data) => {
@@ -204,6 +245,11 @@ class ToDo extends React.Component {
       })
       .catch((error) => {
         console.log("Get all tasks Error", error);
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
       });
   };
 
@@ -214,6 +260,8 @@ class ToDo extends React.Component {
       editableTask,
       isOpenAddEditTaskModal,
       isOpenConfirmModal,
+      loading,
+      deletableTaskId,
     } = this.state;
 
     const tasksJSX = tasks.map((task) => {
@@ -234,6 +282,7 @@ class ToDo extends React.Component {
             isAllChecked={
               !!selectedTasksIDs.size && selectedTasksIDs.size === tasks.length
             }
+            deleteLoading={deletableTaskId === task._id}
           />
         </Col>
       );
@@ -255,10 +304,9 @@ class ToDo extends React.Component {
           </Row>
 
           <Row className="mt-1 mb-5 justify-content-center">
-            {tasksJSX.length ? (
-              tasksJSX
-            ) : (
-              <Col className={noTasksCls.join(" ")}>NO TASKS !</Col>
+            {!!tasksJSX.length && tasksJSX}
+            {!loading && !tasksJSX.length && (
+              <Col className={noTasksCls.join(" ")}> NO TASKS !</Col>
             )}
           </Row>
 
@@ -308,6 +356,7 @@ class ToDo extends React.Component {
             }
           />
         )}
+        {loading && <Spinner />}
       </>
     );
   }
