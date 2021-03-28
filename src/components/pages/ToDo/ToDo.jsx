@@ -27,7 +27,6 @@ class ToDo extends React.Component {
     isOpenConfirmModal: false,
     editableTask: null,
     loading: false,
-    deletableTaskId: "",
   };
 
   toggleHideAddEditTaskModal = () => {
@@ -122,7 +121,7 @@ class ToDo extends React.Component {
 
   handleDeleteTask = (_id) => {
     this.setState({
-      deletableTaskId: _id,
+      loading: true,
     });
     fetch(`${API_HOST}/task/${_id}`, {
       method: "DELETE",
@@ -143,7 +142,7 @@ class ToDo extends React.Component {
       })
       .finally(() => {
         this.setState({
-          deletableTaskId: "",
+          loading: false,
         });
       });
   };
@@ -261,7 +260,6 @@ class ToDo extends React.Component {
       isOpenAddEditTaskModal,
       isOpenConfirmModal,
       loading,
-      deletableTaskId,
     } = this.state;
 
     const tasksJSX = tasks.map((task) => {
@@ -282,7 +280,6 @@ class ToDo extends React.Component {
             isAllChecked={
               !!selectedTasksIDs.size && selectedTasksIDs.size === tasks.length
             }
-            deleteLoading={deletableTaskId === task._id}
           />
         </Col>
       );
