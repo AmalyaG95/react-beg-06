@@ -280,7 +280,6 @@ class ToDo extends React.Component {
             isAllChecked={
               !!selectedTasksIDs.size && selectedTasksIDs.size === tasks.length
             }
-            loading={loading}
           />
         </Col>
       );

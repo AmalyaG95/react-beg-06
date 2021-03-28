@@ -4,7 +4,6 @@ import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
-import Spinner from "../Spinner/Spinner";
 import propTypes from "prop-types";
 
 const CardBodyCls = [
@@ -19,7 +18,6 @@ const Task = ({
   isChecked,
   isAnyChecked,
   isAllChecked,
-  loading,
   handleDeleteTask,
   handleSelectTask,
   setEditableTask,
@@ -73,7 +71,6 @@ const Task = ({
           </div>
         </Card.Body>
       </Card>
-      {loading && <Spinner />}
     </>
   );
 };
@@ -87,7 +84,6 @@ Task.propTypes = {
   isChecked: propTypes.bool.isRequired,
   isAnyChecked: propTypes.bool.isRequired,
   isAllChecked: propTypes.bool.isRequired,
-  loading: propTypes.bool.isRequired,
   handleDeleteTask: propTypes.func.isRequired,
   handleSelectTask: propTypes.func.isRequired,
   setEditableTask: propTypes.func.isRequired,
