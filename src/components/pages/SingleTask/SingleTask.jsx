@@ -51,7 +51,7 @@ class SingleTask extends React.Component {
         if (data.error) {
           throw data.error;
         }
-        this.props.history.push("/");
+        this.props.history.push("/", { error: "404" });
       })
       .catch((error) => {
         console.log("Delete the single task Error", error);

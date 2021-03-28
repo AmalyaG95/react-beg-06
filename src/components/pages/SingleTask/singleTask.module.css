@@ -9,7 +9,7 @@
 
 .card {
   background-color: rgb(55, 221, 185);
-  padding: 15px 25px;
+  padding: 15px 15px;
   border: none;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .date {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .deleteButton,

@@ -1,0 +1,33 @@
+.input {
+  border-radius: 5px;
+  margin: 0 20px 10px 0;
+  padding: 8px 15px;
+  height: 40px;
+}
+
+.input:focus {
+  border: 1px solid #1b8d8d;
+  box-shadow: 0 0 0 0.1rem rgb(79, 173, 173);
+}
+
+.button {
+  border: none;
+  height: 40px;
+  margin: 20px;
+  padding: 0 20px;
+  background-color: rgb(27, 141, 141);
+  color: white;
+}
+
+.button:hover {
+  background-color: rgb(49, 179, 179);
+}
+
+.button:focus {
+  background-color: rgb(27, 141, 141);
+  box-shadow: none;
+}
+
+.button:disabled {
+  background-color: rgb(27, 141, 141);
+}

@@ -64,7 +64,5 @@ function App() {
 
 export default App;
 
-// 1.Add Task, Delete Task, Edit Task, Get Tasks, Delete Any Tasks  Գործողությունները
-// կատարել Loading -ով
-// 2.GoBack կնոպկա, SingleTask  կոմպոնենտի մեջ
-// 3․Երբ task_id ով task գոյություն չունի, գցել 404  էջ
+// 1.Սարքել Contact Page-ի Form-ը (name,email,message Դաշտերով)
+// 2.Submit-ի ժամանակ Հարցումով ավելացնել նոր contact info-ն

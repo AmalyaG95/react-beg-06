@@ -24,6 +24,11 @@ header {
   z-index: 1000;
 }
 
+main {
+  display: flex;
+  min-height: 89vh;
+}
+
 input[type="checkbox"] {
   border: 2px solid black;
   width: 20px;

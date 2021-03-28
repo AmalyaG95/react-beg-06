@@ -2,6 +2,7 @@
   border: none;
   height: 40px;
   margin: 20px;
+  padding: 0 20px;
   background-color: rgb(27, 141, 141);
   color: white;
 }
@@ -13,10 +14,6 @@
 .addTaskButton:focus {
   background-color: rgb(27, 141, 141);
   box-shadow: none;
-}
-
-.addTaskButton:disabled {
-  background-color: rgb(27, 141, 141);
 }
 
 .delSelButtons {
