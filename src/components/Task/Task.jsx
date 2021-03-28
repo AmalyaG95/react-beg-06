@@ -4,7 +4,6 @@ import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
-import Spinner from "../Spinner/Spinner";
 import propTypes from "prop-types";
 
 const CardBodyCls = [
