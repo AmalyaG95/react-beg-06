@@ -40,7 +40,6 @@ export class ContactForm extends Component {
   };
 
   handleSubmit = ({ key, type }) => {
-    console.log(this.state);
     const { loading, ...formData } = this.state;
 
     if (

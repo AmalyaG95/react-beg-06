@@ -51,7 +51,7 @@ class SingleTask extends React.Component {
         if (data.error) {
           throw data.error;
         }
-        this.props.history.push("/", { error: "404" });
+        this.props.history.push("/");
       })
       .catch((error) => {
         console.log("Delete the single task Error", error);
@@ -111,8 +111,8 @@ class SingleTask extends React.Component {
         });
       })
       .catch((error) => {
-        console.log("Single task get Error ", error);
-        this.props.history.push(`${API_HOST}/404`);
+        console.log("Get the single task Error ", error);
+        this.props.history.push("/404");
       });
   }
 
