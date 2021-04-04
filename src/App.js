@@ -3,7 +3,7 @@ import "./App.css";
 import ToDo from "./components/pages/ToDo/ToDo";
 import Contact from "./components/pages/Contact/Contact";
 import About from "./components/pages/About/About";
-import NotFound from "./components/pages/NotFound/NotFound";
+import Error from "./components/pages/Error/Error";
 import SingleTask from "./components/pages/SingleTask/SingleTask";
 import Navbar from "./components/Navbar/Navbar";
 
@@ -29,8 +29,8 @@ const pages = [
     exact: true,
   },
   {
-    path: "/404",
-    component: NotFound,
+    path: "/error/:status",
+    component: Error,
     exact: true,
   },
 ];
@@ -55,7 +55,7 @@ function App() {
       <main>
         <Switch>
           {pagesJSX}
-          <Redirect to="/404" />
+          <Redirect to="/error/404" />
         </Switch>
       </main>
     </div>
@@ -64,5 +64,6 @@ function App() {
 
 export default App;
 
-// 1.Սարքել Contact Page-ի Form-ը (name,email,message Դաշտերով)
-// 2.Submit-ի ժամանակ Հարցումով ավելացնել նոր contact info-ն
+// 1․ Contact Form Validation
+// 2. եթե ունենք գոնե 1 invalid input, փակել submit button-ը
+// 3․ BackEnd-ից ստացված ValidationError-ները Front-ում սիրունացնել և ցույց տալ

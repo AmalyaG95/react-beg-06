@@ -112,7 +112,7 @@ class SingleTask extends React.Component {
       })
       .catch((error) => {
         console.log("Get the single task Error ", error);
-        this.props.history.push("/404");
+        this.props.history.push(`/error/${error.status}`);
       });
   }
 
@@ -198,7 +198,6 @@ class SingleTask extends React.Component {
 
 SingleTask.propTypes = {
   history: propTypes.object.isRequired,
-  location: propTypes.object.isRequired,
   match: propTypes.object.isRequired,
 };
 

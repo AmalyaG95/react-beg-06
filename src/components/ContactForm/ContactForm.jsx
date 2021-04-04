@@ -1,7 +1,14 @@
 import React, { Component, createRef } from "react";
 import styles from "./contactForm.module.css";
 import { Form, Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faExclamationCircle,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../Spinner/Spinner";
+import propTypes from "prop-types";
+import validateForm from "../../utils/validateForm";
 
 const API_HOST = "http://localhost:3001";
 const inputsInfo = [
@@ -26,53 +33,78 @@ const inputsInfo = [
 
 export class ContactForm extends Component {
   state = {
-    name: "",
-    email: "",
-    message: "",
+    inputs: {
+      name: {
+        value: "",
+        isValid: false,
+        error: "",
+      },
+      email: {
+        value: "",
+        isValid: false,
+        error: "",
+      },
+      message: {
+        value: "",
+        isValid: false,
+        error: "",
+      },
+    },
+
     loading: false,
+    errorMessage: "",
   };
   nameInputRef = createRef();
 
   handleChange = ({ target: { name, value } }) => {
+    const error = validateForm(name, value);
+
     this.setState({
-      [name]: value,
+      inputs: {
+        ...this.state.inputs,
+        [name]: {
+          value,
+          isValid: error ? false : true,
+          error,
+        },
+      },
     });
   };
 
-  handleSubmit = ({ key, type }) => {
-    const { loading, ...formData } = this.state;
+  handleSubmit = () => {
+    const formData = { ...this.state.inputs };
 
-    if (
-      !formData.name.trim() ||
-      !formData.email.trim() ||
-      !formData.message.trim() ||
-      (type === "keypress" && key !== "Enter")
-    )
-      return;
+    for (let key in formData) {
+      formData[key] = formData[key].value.trim();
+    }
 
     this.setState({
       loading: true,
+      errorMessage: "",
     });
-    fetch(`${API_HOST}/form`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+
+    (async () => {
+      try {
+        const data = await fetch(`${API_HOST}/form`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }).then((res) => res.json());
+
         if (data.error) {
           throw data.error;
         }
         this.props.history.push("/");
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Send Contact Form data Error", error);
         this.setState({
           loading: false,
+          errorMessage: error.message,
         });
-      });
+      }
+    })();
   };
 
   componentDidMount() {
@@ -80,33 +112,67 @@ export class ContactForm extends Component {
   }
 
   render() {
-    const { name, email, message, loading } = this.state;
+    const {
+      inputs,
+      inputs: { name, email, message },
+      loading,
+      errorMessage,
+    } = this.state;
+
     const inputsJSX = inputsInfo.map((input, index) => {
       return (
-        <Form.Group key={index}>
-          <Form.Control
-            name={input.name}
-            value={this.state[input.name]}
-            onChange={this.handleChange}
-            as={undefined ?? input.as}
-            rows={undefined ?? input.rows}
-            placeholder={input.placeholder}
-            ref={index === 0 ? this.nameInputRef : undefined}
-            className={styles.input}
-          />
-        </Form.Group>
+        <div key={index}>
+          <Form.Group className="d-flex mt-2 mb-1">
+            <Form.Control
+              name={input.name}
+              value={inputs[input.name].value}
+              onChange={this.handleChange}
+              as={undefined ?? input.as}
+              rows={undefined ?? input.rows}
+              placeholder={input.placeholder}
+              ref={index === 0 ? this.nameInputRef : undefined}
+              className={styles.input}
+            />
+            <Form.Text className={styles.valid}>
+              {(name.isValid && input.name === "name") ||
+              (email.isValid && input.name === "email") ||
+              (message.isValid && input.name === "message") ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  style={{
+                    fontSize: "15px",
+                    color: " rgb(5, 112, 112)",
+                  }}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faExclamationCircle}
+                  style={{
+                    fontSize: "15px",
+                  }}
+                />
+              )}
+            </Form.Text>
+          </Form.Group>
+          <Form.Text className={styles.error}>
+            {inputs[input.name].error}
+          </Form.Text>
+        </div>
       );
     });
 
     return (
       <>
-        <Form>
+        <Form noValidate>
+          <Form.Text className={styles.backendError}>
+            {errorMessage.slice(6, errorMessage.length)}
+          </Form.Text>
           {inputsJSX}
           <Button
             variant="info"
             onClick={this.handleSubmit}
             className={styles.button}
-            disabled={!name.trim() || !email.trim() || !message.trim()}
+            disabled={!name.isValid || !email.isValid || !message.isValid}
           >
             Send
           </Button>
@@ -116,5 +182,9 @@ export class ContactForm extends Component {
     );
   }
 }
+
+ContactForm.propTypes = {
+  history: propTypes.object.isRequired,
+};
 
 export default ContactForm;

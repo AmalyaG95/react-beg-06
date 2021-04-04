@@ -1,6 +1,6 @@
 .input {
   border-radius: 5px;
-  margin: 0 20px 10px 0;
+  /* margin: 0 10px 10px 0; */
   padding: 8px 15px;
   height: 40px;
 }
@@ -13,7 +13,7 @@
 .button {
   border: none;
   height: 40px;
-  margin: 20px;
+  margin: 15px;
   padding: 0 20px;
   background-color: rgb(27, 141, 141);
   color: white;
@@ -30,4 +30,32 @@
 
 .button:disabled {
   background-color: rgb(27, 141, 141);
+}
+
+.valid {
+  -webkit-transform: translate(-25px, 7px);
+  -ms-transform: translate(-25px, 7px);
+  transform: translate(-25px, 7px);
+}
+
+.error {
+  color: rgb(243, 85, 85);
+  text-align: left;
+  font-size: 12px;
+  height: 12px;
+  margin: 5px 10px 0;
+}
+
+.backendError {
+  /* background-color: rgb(188, 243, 225);
+  border-radius: 10px; */
+  color: rgb(243, 85, 85);
+  text-align: left;
+  padding: 15px 10px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  height: 15px;
+  /* margin-left: 10px; */
+  /* margin-bottom: 20px; */
 }
