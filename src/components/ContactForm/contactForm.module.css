@@ -1,6 +1,5 @@
 .input {
   border-radius: 5px;
-  /* margin: 0 10px 10px 0; */
   padding: 8px 15px;
   height: 40px;
 }
@@ -42,20 +41,16 @@
   color: rgb(243, 85, 85);
   text-align: left;
   font-size: 12px;
-  height: 12px;
+  min-height: 12px;
   margin: 5px 10px 0;
 }
 
 .backendError {
-  /* background-color: rgb(188, 243, 225);
-  border-radius: 10px; */
   color: rgb(243, 85, 85);
   text-align: left;
   padding: 15px 10px;
   display: flex;
   align-items: center;
   font-size: 15px;
-  height: 15px;
-  /* margin-left: 10px; */
-  /* margin-bottom: 20px; */
+  min-height: 15px;
 }

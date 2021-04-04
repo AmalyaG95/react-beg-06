@@ -1,5 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
-import ContactFormWithHooks from "../../ContactForm/ContactFormWithHooks";
+import ContactFormWithContext from "../../ContactForm/ContactFormWithContext";
+import ContactFormContextProvider from "../../../context/providers/ContactFormContextProvider";
 import propTypes from "prop-types";
 
 const ContainerCls = [
@@ -23,7 +24,9 @@ const Contact = (props) => {
 
       <Row className="mt-3 w-50">
         <Col>
-          <ContactFormWithHooks history={props.history} />
+          <ContactFormContextProvider history={props.history}>
+            <ContactFormWithContext />
+          </ContactFormContextProvider>
         </Col>
       </Row>
     </Container>
