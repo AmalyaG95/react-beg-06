@@ -64,6 +64,5 @@ function App() {
 
 export default App;
 
-// 1․ Contact Form Validation
-// 2. եթե ունենք գոնե 1 invalid input, փակել submit button-ը
-// 3․ BackEnd-ից ստացված ValidationError-ները Front-ում սիրունացնել և ցույց տալ
+// Ունենալ ContactFormWithHooks կոմպոնենտ, որը կփոխարինի ContactForm կոմպոնենտին, և
+// ողջ լոգիկան կլինի hook-երով

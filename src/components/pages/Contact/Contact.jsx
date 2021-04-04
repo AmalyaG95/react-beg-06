@@ -1,5 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
-import ContactForm from "../../ContactForm/ContactForm";
+import ContactFormWithHooks from "../../ContactForm/ContactFormWithHooks";
 import propTypes from "prop-types";
 
 const ContainerCls = [
@@ -23,7 +23,7 @@ const Contact = (props) => {
 
       <Row className="mt-3 w-50">
         <Col>
-          <ContactForm history={props.history} />
+          <ContactFormWithHooks history={props.history} />
         </Col>
       </Row>
     </Container>
