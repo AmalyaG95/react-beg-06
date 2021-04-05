@@ -1,5 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import ContactFormWithContext from "../../ContactForm/ContactFormWithContext";
+import ContactFormWithHooks from "../../ContactForm/ContactFormWithHooks";
+import ContactForm from "../../ContactForm/ContactForm";
 import ContactFormContextProvider from "../../../context/providers/ContactFormContextProvider";
 import propTypes from "prop-types";
 
@@ -9,7 +11,6 @@ const ContainerCls = [
   "align-items-center",
   "align-self-center",
   "justify-content-center",
-  "my-5",
   "py-4",
 ];
 
@@ -22,7 +23,7 @@ const Contact = (props) => {
         </Col>
       </Row>
 
-      <Row className="mt-3 w-50">
+      <Row className="mt-4 w-50">
         <Col>
           <ContactFormContextProvider history={props.history}>
             <ContactFormWithContext />

@@ -25,6 +25,11 @@ const ContactFormContextProvider = ({ children, history }) => {
   });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isOpenErrorMessageAlert, setIsOpenErrorMessageAlert] = useState("");
+
+  const closeErrorMessageAlert = () => {
+    setIsOpenErrorMessageAlert(false);
+  };
 
   const handleChange = ({ target: { name, value } }) => {
     const error = validateForm(name, value);
@@ -48,7 +53,6 @@ const ContactFormContextProvider = ({ children, history }) => {
 
     setLoading(true);
     setErrorMessage("");
-
     (async () => {
       try {
         const data = await fetch(`${API_HOST}/form`, {
@@ -67,6 +71,7 @@ const ContactFormContextProvider = ({ children, history }) => {
         console.log("Send Contact Form data Error", error);
         setLoading(false);
         setErrorMessage(error.message);
+        setIsOpenErrorMessageAlert(true);
       }
     })();
   };
@@ -78,7 +83,9 @@ const ContactFormContextProvider = ({ children, history }) => {
         inputs,
         loading,
         errorMessage,
+        isOpenErrorMessageAlert,
         //functions
+        closeErrorMessageAlert,
         handleChange,
         handleSubmit,
       }}

@@ -32,9 +32,9 @@
 }
 
 .valid {
-  -webkit-transform: translate(-25px, 7px);
-  -ms-transform: translate(-25px, 7px);
-  transform: translate(-25px, 7px);
+  position: absolute;
+  right: 15px;
+  top: 9px;
 }
 
 .error {
@@ -43,14 +43,4 @@
   font-size: 12px;
   min-height: 12px;
   margin: 5px 10px 0;
-}
-
-.backendError {
-  color: rgb(243, 85, 85);
-  text-align: left;
-  padding: 15px 10px;
-  display: flex;
-  align-items: center;
-  font-size: 15px;
-  min-height: 15px;
 }

@@ -7,6 +7,7 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../Spinner/Spinner";
+import ErrorMessageAlert from "../ErrorMessageAlert/ErrorMessageAlert";
 import { contactFormContext } from "../../context/contexts";
 
 const inputsInfo = [
@@ -31,7 +32,15 @@ const inputsInfo = [
 
 const ContactFormWithContext = () => {
   const context = useContext(contactFormContext);
-  const { inputs, loading, errorMessage, handleChange, handleSubmit } = context;
+  const {
+    inputs,
+    loading,
+    errorMessage,
+    isOpenErrorMessageAlert,
+    closeErrorMessageAlert,
+    handleChange,
+    handleSubmit,
+  } = context;
   const { name, email, message } = inputs;
 
   const nameInputRef = createRef();
@@ -43,7 +52,7 @@ const ContactFormWithContext = () => {
   const inputsJSX = inputsInfo.map((input, index) => {
     return (
       <div key={index}>
-        <Form.Group className="d-flex mt-2 mb-1">
+        <Form.Group className="mt-2 mb-1 position-relative">
           <Form.Control
             name={input.name}
             value={inputs[input.name].value}
@@ -85,9 +94,12 @@ const ContactFormWithContext = () => {
   return (
     <>
       <Form noValidate>
-        <Form.Text className={styles.backendError}>
-          {errorMessage.slice(6, errorMessage.length)}
-        </Form.Text>
+        {isOpenErrorMessageAlert && (
+          <ErrorMessageAlert
+            errorMessage={errorMessage}
+            closeErrorMessageAlert={closeErrorMessageAlert}
+          />
+        )}
         {inputsJSX}
         <Button
           variant="info"

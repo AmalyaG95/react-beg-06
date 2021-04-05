@@ -7,6 +7,7 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../Spinner/Spinner";
+import ErrorMessageAlert from "../ErrorMessageAlert/ErrorMessageAlert";
 import propTypes from "prop-types";
 import validateForm from "../../utils/validateForm";
 
@@ -51,12 +52,17 @@ const ContactFormWithHooks = ({ history }) => {
   });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isOpenErrorMessageAlert, setIsOpenErrorMessageAlert] = useState(false);
   const nameInputRef = createRef();
   const { name, email, message } = inputs;
 
   useEffect(() => {
     nameInputRef.current.focus();
   }, []);
+
+  const closeErrorMessageAlert = () => {
+    setIsOpenErrorMessageAlert(false);
+  };
 
   const handleChange = ({ target: { name, value } }) => {
     const error = validateForm(name, value);
@@ -80,7 +86,6 @@ const ContactFormWithHooks = ({ history }) => {
 
     setLoading(true);
     setErrorMessage("");
-
     (async () => {
       try {
         const data = await fetch(`${API_HOST}/form`, {
@@ -99,6 +104,7 @@ const ContactFormWithHooks = ({ history }) => {
         console.log("Send Contact Form data Error", error);
         setLoading(false);
         setErrorMessage(error.message);
+        setIsOpenErrorMessageAlert(true);
       }
     })();
   };
@@ -106,7 +112,7 @@ const ContactFormWithHooks = ({ history }) => {
   const inputsJSX = inputsInfo.map((input, index) => {
     return (
       <div key={index}>
-        <Form.Group className="d-flex mt-2 mb-1">
+        <Form.Group className="mt-2 mb-1 position-relative">
           <Form.Control
             name={input.name}
             value={inputs[input.name].value}
@@ -148,9 +154,12 @@ const ContactFormWithHooks = ({ history }) => {
   return (
     <>
       <Form noValidate>
-        <Form.Text className={styles.backendError}>
-          {errorMessage.slice(6, errorMessage.length)}
-        </Form.Text>
+        {isOpenErrorMessageAlert && (
+          <ErrorMessageAlert
+            errorMessage={errorMessage}
+            closeErrorMessageAlert={closeErrorMessageAlert}
+          />
+        )}
         {inputsJSX}
         <Button
           variant="info"

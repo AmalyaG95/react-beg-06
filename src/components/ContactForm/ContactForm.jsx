@@ -7,6 +7,7 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../Spinner/Spinner";
+import ErrorMessageAlert from "../ErrorMessageAlert/ErrorMessageAlert";
 import propTypes from "prop-types";
 import validateForm from "../../utils/validateForm";
 
@@ -53,8 +54,15 @@ export class ContactForm extends Component {
 
     loading: false,
     errorMessage: "",
+    isOpenErrorMessageAlert: false,
   };
   nameInputRef = createRef();
+
+  closeErrorMessageAlert = () => {
+    this.setState({
+      isOpenErrorMessageAlert: false,
+    });
+  };
 
   handleChange = ({ target: { name, value } }) => {
     const error = validateForm(name, value);
@@ -82,7 +90,6 @@ export class ContactForm extends Component {
       loading: true,
       errorMessage: "",
     });
-
     (async () => {
       try {
         const data = await fetch(`${API_HOST}/form`, {
@@ -102,6 +109,7 @@ export class ContactForm extends Component {
         this.setState({
           loading: false,
           errorMessage: error.message,
+          isOpenErrorMessageAlert: true,
         });
       }
     })();
@@ -117,12 +125,13 @@ export class ContactForm extends Component {
       inputs: { name, email, message },
       loading,
       errorMessage,
+      isOpenErrorMessageAlert,
     } = this.state;
 
     const inputsJSX = inputsInfo.map((input, index) => {
       return (
         <div key={index}>
-          <Form.Group className="d-flex mt-2 mb-1">
+          <Form.Group className="mt-2 mb-1 position-relative">
             <Form.Control
               name={input.name}
               value={inputs[input.name].value}
@@ -164,15 +173,18 @@ export class ContactForm extends Component {
     return (
       <>
         <Form noValidate>
-          <Form.Text className={styles.backendError}>
-            {errorMessage.slice(6, errorMessage.length)}
-          </Form.Text>
+          {isOpenErrorMessageAlert && (
+            <ErrorMessageAlert
+              errorMessage={errorMessage}
+              closeErrorMessageAlert={this.closeErrorMessageAlert}
+            />
+          )}
           {inputsJSX}
           <Button
             variant="info"
             onClick={this.handleSubmit}
             className={styles.button}
-            disabled={!name.isValid || !email.isValid || !message.isValid}
+            // disabled={!name.isValid || !email.isValid || !message.isValid}
           >
             Send
           </Button>
