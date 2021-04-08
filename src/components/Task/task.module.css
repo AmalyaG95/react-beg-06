@@ -1,7 +1,7 @@
 .task {
   width: 500px;
   min-width: 500px;
-  height: 70px;
+  min-height: 70px;
   border: 1px solid teal;
   border-radius: 10px;
   background-color: rgb(55, 221, 185);

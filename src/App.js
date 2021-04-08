@@ -5,8 +5,7 @@ import Contact from "./components/pages/Contact/Contact";
 import About from "./components/pages/About/About";
 import Error from "./components/pages/Error/Error";
 import Navbar from "./components/Navbar/Navbar";
-import SingleTaskWithContext from "./components/pages/SingleTask/SingleTaskWithContext";
-import SingleTaskContextProvider from "./context/providers/SingleTaskContextProvider";
+import SingleTaskWithReducer from "./components/pages/SingleTask/SingleTaskWithReducer";
 
 const pages = [
   {
@@ -26,7 +25,7 @@ const pages = [
   },
   {
     path: "/task/:id",
-    component: SingleTaskWithContext,
+    component: SingleTaskWithReducer,
     exact: true,
   },
   {
@@ -38,21 +37,6 @@ const pages = [
 
 function App() {
   const pagesJSX = pages.map((page, index) => {
-    if (index === 3) {
-      return (
-        <Route
-          key={index}
-          path={page.path}
-          render={(props) => (
-            <SingleTaskContextProvider {...props}>
-              <page.component />
-            </SingleTaskContextProvider>
-          )}
-          exact={page.exact}
-        />
-      );
-    }
-
     return (
       <Route
         key={index}
@@ -80,4 +64,4 @@ function App() {
 
 export default App;
 
-// SingleTask Component ը սարքել Context ի միջոցով
+// SingleTask կոմպոնենտը սարքել useReducer-ով
