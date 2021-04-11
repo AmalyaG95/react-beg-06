@@ -4,7 +4,6 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import Task from "../../Task/Task";
 import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
 import Spinner from "../../Spinner/Spinner";
-
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 
 const API_HOST = "http://localhost:3001";
@@ -33,7 +32,6 @@ class ToDo extends React.Component {
     this.setState({
       isOpenAddEditTaskModal: !this.state.isOpenAddEditTaskModal,
     });
-    if (this.state.editableTask) this.toggleSetEditableTask();
   };
 
   toggleHideConfirmModal = () => {
@@ -99,14 +97,13 @@ class ToDo extends React.Component {
         if (data.error) {
           throw data.error;
         }
-
         const ind = tasks.findIndex((task) => task._id === data._id);
 
-        this.toggleSetEditableTask();
         tasks[ind] = data;
         this.setState({
           tasks,
         });
+        this.toggleSetEditableTask();
       })
       .catch((error) => {
         console.log("Edit a task Error", error);
@@ -152,7 +149,6 @@ class ToDo extends React.Component {
 
     if (selectedTasksIDs.has(_id)) {
       selectedTasksIDs.delete(_id);
-      this.handleSelectAllTasks();
     } else {
       selectedTasksIDs.add(_id);
     }

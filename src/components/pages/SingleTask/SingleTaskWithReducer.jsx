@@ -23,121 +23,107 @@ const CardBodyCls = [
   "py-1",
 ];
 
-const initialSingleTask = null;
-const initialRestState = {
+const initialState = {
+  singleTask: null,
   loading: false,
   isEditable: false,
 };
 
-const singleTaskReducer = (singleTask = initialSingleTask, action) => {
+const reducer = (state = initialState, action) => {
+  const { isEditable } = state;
+
   switch (action.type) {
     case "SET_SINGLE_TASK":
-      return action.data;
-    default:
-      return singleTask;
-  }
-};
-
-const restStateReducer = (restState = initialRestState, action) => {
-  switch (action.type) {
+      return {
+        ...state,
+        singleTask: action.data,
+      };
     case "SET_LOADING":
       return {
-        ...restState,
+        ...state,
         loading: true,
       };
     case "REMOVE_LOADING":
       return {
-        ...restState,
+        ...state,
         loading: false,
       };
     case "TOGGLE_HIDE_MODAL":
       return {
-        ...restState,
-        isEditable: !restState.isEditable,
+        ...state,
+        isEditable: !isEditable,
       };
     default:
-      return restState;
+      return state;
   }
 };
 
 const SingleTaskWithReducer = ({ match, history }) => {
-  const [singleTask, singleTaskDispatch] = useReducer(
-    singleTaskReducer,
-    initialSingleTask
-  );
-  const [restState, restStateDispatch] = useReducer(
-    restStateReducer,
-    initialRestState
-  );
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { singleTask, loading, isEditable } = state;
 
-  useEffect(() => {
+  useEffect(async () => {
     const { id } = match.params;
 
-    (async () => {
-      try {
-        const data = await fetch(`${API_HOST}/task/${id}`).then((res) =>
-          res.json()
-        );
-        if (data.error) throw data.error;
-        singleTaskDispatch({ type: "SET_SINGLE_TASK", data });
-      } catch (error) {
-        console.log("Get the single task Error ", error);
-        history.push(`/error/${error.status}`);
-      }
-    })();
+    try {
+      const data = await fetch(`${API_HOST}/task/${id}`).then((res) =>
+        res.json()
+      );
+      if (data.error) throw data.error;
+      dispatch({ type: "SET_SINGLE_TASK", data });
+    } catch (error) {
+      console.log("Get the single task Error ", error);
+      history.push(`/error/${error.status}`);
+    }
   }, [match.params, history]);
 
   const toggleHideAddEditTaskModal = useCallback(() => {
-    restStateDispatch({ type: "TOGGLE_HIDE_MODAL" });
+    dispatch({ type: "TOGGLE_HIDE_MODAL" });
   }, []);
 
-  const handleDelete = useCallback(() => {
+  const handleDelete = useCallback(async () => {
     const { id } = match.params;
 
-    restStateDispatch({ type: "SET_LOADING" });
-    (async () => {
+    dispatch({ type: "SET_LOADING" });
+    try {
+      const data = await fetch(`${API_HOST}/task/${id}`, {
+        method: "DELETE",
+      }).then((res) => res.json());
+
+      if (data.error) {
+        throw data.error;
+      }
+      history.push("/");
+    } catch (error) {
+      console.log("Delete the single task Error", error);
+      dispatch({ type: "REMOVE_LOADING" });
+    }
+  }, [match.params, history]);
+
+  const handleEdit = useCallback(
+    async (editableTask) => {
+      dispatch({ type: "SET_LOADING" });
       try {
-        const data = await fetch(`${API_HOST}/task/${id}`, {
-          method: "DELETE",
+        const data = await fetch(`${API_HOST}/task/${singleTask._id}`, {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(editableTask),
         }).then((res) => res.json());
 
         if (data.error) {
           throw data.error;
         }
-        history.push("/");
+        dispatch({ type: "SET_SINGLE_TASK", data });
       } catch (error) {
-        console.log("Delete the single task Error", error);
-        restStateDispatch({ type: "REMOVE_LOADING" });
+        console.log("Edit the single task Error", error);
+      } finally {
+        dispatch({ type: "REMOVE_LOADING" });
+        dispatch({ type: "TOGGLE_HIDE_MODAL" });
       }
-    })();
-  }, [match.params, history]);
-
-  const handleEdit = useCallback(
-    (editableTask) => {
-      restStateDispatch({ type: "SET_LOADING" });
-      (async () => {
-        try {
-          const data = await fetch(`${API_HOST}/task/${singleTask._id}`, {
-            method: "PUT",
-            headers: {
-              "content-type": "application/json",
-            },
-            body: JSON.stringify(editableTask),
-          }).then((res) => res.json());
-
-          if (data.error) {
-            throw data.error;
-          }
-          singleTaskDispatch({ type: "SET_SINGLE_TASK", data });
-        } catch (error) {
-          console.log("Edit the single task Error", error);
-        } finally {
-          restStateDispatch({ type: "REMOVE_LOADING" });
-          restStateDispatch({ type: "TOGGLE_HIDE_MODAL" });
-        }
-      })();
     },
-    [singleTask._id]
+    [singleTask]
   );
 
   const goBack = useCallback(() => {
@@ -208,14 +194,14 @@ const SingleTaskWithReducer = ({ match, history }) => {
           </Row>
         </Container>
       )}
-      {restState.isEditable && (
+      {isEditable && (
         <AddEditTaskModal
           editableTask={singleTask}
           onSubmit={handleEdit}
           onHide={toggleHideAddEditTaskModal}
         />
       )}
-      {restState.loading && <Spinner />}
+      {loading && <Spinner />}
     </>
   );
 };
