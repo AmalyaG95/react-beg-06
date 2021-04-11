@@ -1,16 +1,16 @@
 import { Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
-import ToDo from "./components/pages/ToDo/ToDo";
+import Navbar from "./components/Navbar/Navbar";
+import ToDoWithRedux from "./components/pages/ToDo/ToDoWithRedux";
 import Contact from "./components/pages/Contact/Contact";
 import About from "./components/pages/About/About";
 import Error from "./components/pages/Error/Error";
-import Navbar from "./components/Navbar/Navbar";
-import SingleTaskWithReducer from "./components/pages/SingleTask/SingleTaskWithReducer";
+import SingleTaskWithRedux from "./components/pages/SingleTask/SingleTaskWithRedux";
 
 const pages = [
   {
     path: "/",
-    component: ToDo,
+    component: ToDoWithRedux,
     exact: true,
   },
   {
@@ -25,7 +25,7 @@ const pages = [
   },
   {
     path: "/task/:id",
-    component: SingleTaskWithReducer,
+    component: SingleTaskWithRedux,
     exact: true,
   },
   {
@@ -64,4 +64,5 @@ function App() {
 
 export default App;
 
-// SingleTask կոմպոնենտը սարքել useReducer-ով
+// 1․ SingleTask ը սարքում ենք redux ով
+// 2․ Մեկ էլ ToDo ն

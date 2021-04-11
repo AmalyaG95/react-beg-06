@@ -1,4 +1,5 @@
-import { useEffect, useReducer, useCallback, memo } from "react";
+import { useEffect, useCallback, memo } from "react";
+import { connect } from "react-redux";
 import styles from "./singleTask.module.css";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +7,7 @@ import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../../Spinner/Spinner";
 import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
 import propTypes from "prop-types";
+import types from "../../../Redux/actionsType";
 
 const API_HOST = "http://localhost:3001";
 const ContainerCls = [
@@ -23,45 +25,17 @@ const CardBodyCls = [
   "py-1",
 ];
 
-const initialState = {
-  singleTask: null,
-  loading: false,
-  isEditable: false,
-};
-
-const reducer = (state = initialState, action) => {
-  const { isEditable } = state;
-
-  switch (action.type) {
-    case "SET_SINGLE_TASK":
-      return {
-        ...state,
-        singleTask: action.data,
-      };
-    case "SET_LOADING":
-      return {
-        ...state,
-        loading: true,
-      };
-    case "REMOVE_LOADING":
-      return {
-        ...state,
-        loading: false,
-      };
-    case "TOGGLE_HIDE_MODAL":
-      return {
-        ...state,
-        isEditable: !isEditable,
-      };
-    default:
-      return state;
-  }
-};
-
-const SingleTaskWithReducer = ({ match, history }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const { singleTask, loading, isEditable } = state;
-
+const SingleTaskWithRedux = ({
+  match,
+  history,
+  SingleTaskState: { singleTask, isEditable },
+  loading,
+  setSingleTask,
+  removeSingleTask,
+  toggleHideAddEditTaskModal,
+  setLoading,
+  removeLoading,
+}) => {
   useEffect(async () => {
     const { id } = match.params;
 
@@ -70,21 +44,17 @@ const SingleTaskWithReducer = ({ match, history }) => {
         res.json()
       );
       if (data.error) throw data.error;
-      dispatch({ type: "SET_SINGLE_TASK", data });
+      setSingleTask(data);
     } catch (error) {
       console.log("Get the single task Error ", error);
       history.push(`/error/${error.status}`);
     }
   }, [match.params, history]);
 
-  const toggleHideAddEditTaskModal = useCallback(() => {
-    dispatch({ type: "TOGGLE_HIDE_MODAL" });
-  }, []);
-
   const handleDelete = useCallback(async () => {
     const { id } = match.params;
 
-    dispatch({ type: "SET_LOADING" });
+    setLoading();
     try {
       const data = await fetch(`${API_HOST}/task/${id}`, {
         method: "DELETE",
@@ -94,15 +64,17 @@ const SingleTaskWithReducer = ({ match, history }) => {
         throw data.error;
       }
       history.push("/");
+      removeSingleTask();
     } catch (error) {
       console.log("Delete the single task Error", error);
-      dispatch({ type: "REMOVE_LOADING" });
+    } finally {
+      removeLoading();
     }
   }, [match.params, history]);
 
   const handleEdit = useCallback(
     async (editableTask) => {
-      dispatch({ type: "SET_LOADING" });
+      setLoading();
       try {
         const data = await fetch(`${API_HOST}/task/${singleTask._id}`, {
           method: "PUT",
@@ -115,12 +87,12 @@ const SingleTaskWithReducer = ({ match, history }) => {
         if (data.error) {
           throw data.error;
         }
-        dispatch({ type: "SET_SINGLE_TASK", data });
+        setSingleTask(data);
       } catch (error) {
         console.log("Edit the single task Error", error);
       } finally {
-        dispatch({ type: "REMOVE_LOADING" });
-        dispatch({ type: "TOGGLE_HIDE_MODAL" });
+        removeLoading();
+        toggleHideAddEditTaskModal();
       }
     },
     [singleTask]
@@ -128,6 +100,7 @@ const SingleTaskWithReducer = ({ match, history }) => {
 
   const goBack = useCallback(() => {
     history.goBack();
+    removeSingleTask();
   }, [history]);
 
   return (
@@ -206,9 +179,53 @@ const SingleTaskWithReducer = ({ match, history }) => {
   );
 };
 
-SingleTaskWithReducer.propTypes = {
-  history: propTypes.object.isRequired,
-  match: propTypes.object.isRequired,
+const mapStateToProps = (state) => {
+  const { SingleTaskState, loading } = state;
+
+  return {
+    SingleTaskState,
+    loading,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  const setSingleTask = (data) => {
+    dispatch({ type: types.SET_SINGLE_TASK, data });
+  };
+  const removeSingleTask = () => {
+    dispatch({ type: types.REMOVE_SINGLE_TASK });
+  };
+  const toggleHideAddEditTaskModal = () => {
+    dispatch({ type: types.TOGGLE_HIDE_MODAL });
+  };
+  const setLoading = () => {
+    dispatch({ type: types.SET_LOADING });
+  };
+  const removeLoading = () => {
+    dispatch({ type: types.REMOVE_LOADING });
+  };
+  return {
+    setSingleTask,
+    removeSingleTask,
+    toggleHideAddEditTaskModal,
+    setLoading,
+    removeLoading,
+  };
 };
 
-export default memo(SingleTaskWithReducer);
+SingleTaskWithRedux.propTypes = {
+  history: propTypes.object.isRequired,
+  match: propTypes.object.isRequired,
+  singleTask: propTypes.object,
+  isEditable: propTypes.bool,
+  loading: propTypes.bool.isRequired,
+  setSingleTask: propTypes.func.isRequired,
+  removeSingleTask: propTypes.func.isRequired,
+  toggleHideAddEditTaskModal: propTypes.func.isRequired,
+  setLoading: propTypes.func.isRequired,
+  removeLoading: propTypes.func.isRequired,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(memo(SingleTaskWithRedux));
