@@ -36,19 +36,20 @@ const SingleTaskWithRedux = ({
   setLoading,
   removeLoading,
 }) => {
-  useEffect(async () => {
+  useEffect(() => {
     const { id } = match.params;
-
-    try {
-      const data = await fetch(`${API_HOST}/task/${id}`).then((res) =>
-        res.json()
-      );
-      if (data.error) throw data.error;
-      setSingleTask(data);
-    } catch (error) {
-      console.log("Get the single task Error ", error);
-      history.push(`/error/${error.status}`);
-    }
+    (async () => {
+      try {
+        const data = await fetch(`${API_HOST}/task/${id}`).then((res) =>
+          res.json()
+        );
+        if (data.error) throw data.error;
+        setSingleTask(data);
+      } catch (error) {
+        console.log("Get the single task Error ", error);
+        history.push(`/error/${error.status}`);
+      }
+    })();
   }, [match.params, history]);
 
   const handleDelete = useCallback(async () => {
@@ -70,7 +71,7 @@ const SingleTaskWithRedux = ({
     } finally {
       removeLoading();
     }
-  }, [match.params, history]);
+  }, [match.params, history]); // ???????????????????????????????????
 
   const handleEdit = useCallback(
     async (editableTask) => {
@@ -95,13 +96,13 @@ const SingleTaskWithRedux = ({
         toggleHideAddEditTaskModal();
       }
     },
-    [singleTask]
+    [singleTask] // ???????????????????????????????????
   );
 
   const goBack = useCallback(() => {
     history.goBack();
     removeSingleTask();
-  }, [history]);
+  }, [history]); // ???????????????????????????????????
 
   return (
     <>
