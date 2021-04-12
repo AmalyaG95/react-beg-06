@@ -1,4 +1,4 @@
-import { useEffect, useCallback, memo } from "react";
+import { useEffect, memo } from "react";
 import { connect } from "react-redux";
 import styles from "./toDo.module.css";
 import { Container, Row, Col, Button } from "react-bootstrap";
@@ -8,8 +8,14 @@ import Spinner from "../../Spinner/Spinner";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import propTypes from "prop-types";
 import types from "../../../Redux/actionsType";
+import {
+  getTasksThunk,
+  addTaskThunk,
+  editTaskThunk,
+  deleteTaskThunk,
+  deleteSelectedTasksThunk,
+} from "../../../Redux/actions";
 
-const API_HOST = "http://localhost:3001";
 const ContainerCls = ["d-flex ", "flex-column", "align-content-center", "py-4"];
 const delSelButtonsColCls = [
   "d-flex",
@@ -35,131 +41,15 @@ const ToDoWithRedux = ({
   toggleHideAddEditTaskModal,
   toggleHideConfirmModal,
   toggleSetEditableTask,
-  addTask,
-  editTask,
-  deleteTask,
   selectTask,
   selectAllTasks,
-  deleteSelectedTasks,
-  setTasks,
-  setLoading,
-  removeLoading,
+  getTasks,
+  handleAddTask,
+  handleEditTask,
+  handleDeleteTask,
+  handleDeleteSelectedTasks,
 }) => {
-  useEffect(() => {
-    setLoading();
-    fetch(`${API_HOST}/task`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw data.error;
-        }
-        setTasks(data);
-      })
-      .catch((error) => {
-        console.log("Get all tasks Error", error);
-      })
-      .finally(() => {
-        removeLoading();
-      });
-  }, []);
-
-  const handleAddTask = useCallback((newTaskData) => {
-    setLoading();
-    fetch(`${API_HOST}/task`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(newTaskData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw data.error;
-        }
-        addTask(data);
-      })
-      .catch((error) => {
-        console.log("Add a task Error", error);
-      })
-      .finally(() => {
-        removeLoading();
-        toggleHideAddEditTaskModal();
-      });
-  }, []);
-
-  const handleEditTask = useCallback(
-    (editableTaskData) => {
-      setLoading();
-      fetch(`${API_HOST}/task/${editableTask._id}`, {
-        method: "PUT",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(editableTaskData),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            throw data.error;
-          }
-          editTask(data);
-          toggleSetEditableTask();
-        })
-        .catch((error) => {
-          console.log("Edit a task Error", error);
-        })
-        .finally(() => {
-          removeLoading();
-          toggleHideAddEditTaskModal();
-        });
-    },
-    [editableTask]
-  );
-
-  const handleDeleteTask = useCallback((_id) => {
-    setLoading();
-    fetch(`${API_HOST}/task/${_id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw data.error;
-        }
-        deleteTask(_id);
-      })
-      .catch((error) => {
-        console.log("Delete a task Error", error);
-      })
-      .finally(() => {
-        removeLoading();
-      });
-  }, []);
-
-  const handleDeleteSelectedTasks = useCallback(() => {
-    setLoading();
-    fetch(`${API_HOST}/task`, {
-      method: "PATCH",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ tasks: Array.from(selectedTasksIDs) }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw data.error;
-        }
-        deleteSelectedTasks();
-      })
-      .catch((error) => {
-        console.log("Delete selected tasks Error", error);
-      })
-      .finally(() => {
-        removeLoading();
-      });
-  }, [selectedTasksIDs]);
+  useEffect(getTasks, []);
 
   const tasksJSX = tasks.map((task) => {
     return (
@@ -241,7 +131,7 @@ const ToDoWithRedux = ({
 
       {isOpenConfirmModal && (
         <ConfirmModal
-          onSubmit={handleDeleteSelectedTasks}
+          onSubmit={() => handleDeleteSelectedTasks(selectedTasksIDs)}
           onHide={toggleHideConfirmModal}
           countOrOneTaskTitle={
             selectedTasksIDs.size > 1
@@ -301,20 +191,58 @@ const mapDispatchToProps = (dispatch) => {
   const removeLoading = () => {
     dispatch({ type: types.REMOVE_LOADING });
   };
+  const getTasks = () => {
+    dispatch(() => getTasksThunk(setTasks, setLoading, removeLoading));
+  };
+  const handleAddTask = (newTaskData) => {
+    dispatch(() =>
+      addTaskThunk(
+        newTaskData,
+        addTask,
+        setLoading,
+        removeLoading,
+        toggleHideAddEditTaskModal
+      )
+    );
+  };
+  const handleEditTask = (editableTaskData, editableTask) => {
+    dispatch(() =>
+      editTaskThunk(
+        editableTask,
+        editableTaskData,
+        editTask,
+        toggleSetEditableTask,
+        setLoading,
+        removeLoading,
+        toggleHideAddEditTaskModal
+      )
+    );
+  };
+  const handleDeleteTask = (_id) => {
+    dispatch(() => deleteTaskThunk(_id, deleteTask, setLoading, removeLoading));
+  };
+  const handleDeleteSelectedTasks = (selectedTasksIDs) => {
+    dispatch(() =>
+      deleteSelectedTasksThunk(
+        selectedTasksIDs,
+        deleteSelectedTasks,
+        setLoading,
+        removeLoading
+      )
+    );
+  };
 
   return {
     toggleHideAddEditTaskModal,
     toggleHideConfirmModal,
     toggleSetEditableTask,
-    addTask,
-    editTask,
-    deleteTask,
     selectTask,
     selectAllTasks,
-    deleteSelectedTasks,
-    setTasks,
-    setLoading,
-    removeLoading,
+    getTasks,
+    handleAddTask,
+    handleEditTask,
+    handleDeleteTask,
+    handleDeleteSelectedTasks,
   };
 };
 
@@ -329,15 +257,13 @@ ToDoWithRedux.propTypes = {
   toggleHideAddEditTaskModal: propTypes.func.isRequired,
   toggleHideConfirmModal: propTypes.func.isRequired,
   toggleSetEditableTask: propTypes.func.isRequired,
-  addTask: propTypes.func.isRequired,
-  editTask: propTypes.func.isRequired,
-  deleteTask: propTypes.func.isRequired,
   selectTask: propTypes.func.isRequired,
   selectAllTasks: propTypes.func.isRequired,
-  deleteSelectedTasks: propTypes.func.isRequired,
-  setTasks: propTypes.func.isRequired,
-  setLoading: propTypes.func.isRequired,
-  removeLoading: propTypes.func.isRequired,
+  getTasks: propTypes.func.isRequired,
+  handleAddTask: propTypes.func.isRequired,
+  handleEditTask: propTypes.func.isRequired,
+  handleDeleteTask: propTypes.func.isRequired,
+  handleDeleteSelectedTasks: propTypes.func.isRequired,
 };
 
 export default connect(

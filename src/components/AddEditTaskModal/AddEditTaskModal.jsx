@@ -41,7 +41,12 @@ export class AddEditTaskModal extends Component {
     )
       return;
 
-    onSubmit({ ...this.state, date: formatDate(date) });
+    this.props.editableTask
+      ? onSubmit(
+          { ...this.state, date: formatDate(date) },
+          this.props.editableTask
+        )
+      : onSubmit({ ...this.state, date: formatDate(date) });
   };
 
   componentDidMount() {

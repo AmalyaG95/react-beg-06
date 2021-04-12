@@ -1,4 +1,4 @@
-import { useEffect, useCallback, memo } from "react";
+import { useEffect, memo } from "react";
 import { connect } from "react-redux";
 import styles from "./singleTask.module.css";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
@@ -8,8 +8,13 @@ import Spinner from "../../Spinner/Spinner";
 import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
 import propTypes from "prop-types";
 import types from "../../../Redux/actionsType";
+import {
+  getSingleTaskThunk,
+  deleteSingleTaskThunk,
+  editSingleTaskThunk,
+  goBackThunk,
+} from "../../../Redux/actions";
 
-const API_HOST = "http://localhost:3001";
 const ContainerCls = [
   "d-flex flex-column",
   "align-items-center",
@@ -30,78 +35,13 @@ const SingleTaskWithRedux = ({
   history,
   SingleTaskState: { singleTask, isEditable },
   loading,
-  setSingleTask,
-  removeSingleTask,
   toggleHideAddEditTaskModal,
-  setLoading,
-  removeLoading,
+  getSingleTask,
+  handleDelete,
+  handleEdit,
+  goBack,
 }) => {
-  useEffect(async () => {
-    const { id } = match.params;
-
-    try {
-      const data = await fetch(`${API_HOST}/task/${id}`).then((res) =>
-        res.json()
-      );
-      if (data.error) throw data.error;
-      setSingleTask(data);
-    } catch (error) {
-      console.log("Get the single task Error ", error);
-      history.push(`/error/${error.status}`);
-    }
-  }, [match.params, history]);
-
-  const handleDelete = useCallback(async () => {
-    const { id } = match.params;
-
-    setLoading();
-    try {
-      const data = await fetch(`${API_HOST}/task/${id}`, {
-        method: "DELETE",
-      }).then((res) => res.json());
-
-      if (data.error) {
-        throw data.error;
-      }
-      history.push("/");
-      removeSingleTask();
-    } catch (error) {
-      console.log("Delete the single task Error", error);
-    } finally {
-      removeLoading();
-    }
-  }, [match.params, history]);
-
-  const handleEdit = useCallback(
-    async (editableTask) => {
-      setLoading();
-      try {
-        const data = await fetch(`${API_HOST}/task/${singleTask._id}`, {
-          method: "PUT",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(editableTask),
-        }).then((res) => res.json());
-
-        if (data.error) {
-          throw data.error;
-        }
-        setSingleTask(data);
-      } catch (error) {
-        console.log("Edit the single task Error", error);
-      } finally {
-        removeLoading();
-        toggleHideAddEditTaskModal();
-      }
-    },
-    [singleTask]
-  );
-
-  const goBack = useCallback(() => {
-    history.goBack();
-    removeSingleTask();
-  }, [history]);
+  useEffect(() => getSingleTask(history, match), []);
 
   return (
     <>
@@ -130,7 +70,7 @@ const SingleTaskWithRedux = ({
                   <Card.Footer className="d-flex">
                     <Button
                       variant="light"
-                      onClick={handleDelete}
+                      onClick={() => handleDelete(history, match)}
                       className={styles.deleteButton}
                     >
                       <FontAwesomeIcon
@@ -158,7 +98,7 @@ const SingleTaskWithRedux = ({
             <Col>
               <Button
                 variant="secondary"
-                onClick={goBack}
+                onClick={() => goBack(history)}
                 style={{ marginTop: "20px" }}
               >
                 Go Back
@@ -203,12 +143,41 @@ const mapDispatchToProps = (dispatch) => {
   const removeLoading = () => {
     dispatch({ type: types.REMOVE_LOADING });
   };
+  const getSingleTask = (history, match) => {
+    dispatch(() => getSingleTaskThunk(history, match, setSingleTask));
+  };
+  const handleDelete = (history, match) => {
+    dispatch(() =>
+      deleteSingleTaskThunk(
+        history,
+        match,
+        setLoading,
+        removeLoading,
+        removeSingleTask
+      )
+    );
+  };
+  const handleEdit = (editableTask, singleTask) => {
+    dispatch(() =>
+      editSingleTaskThunk(
+        singleTask,
+        editableTask,
+        setLoading,
+        removeLoading,
+        setSingleTask,
+        toggleHideAddEditTaskModal
+      )
+    );
+  };
+  const goBack = (history) => {
+    dispatch(() => goBackThunk(history, removeSingleTask));
+  };
   return {
-    setSingleTask,
-    removeSingleTask,
     toggleHideAddEditTaskModal,
-    setLoading,
-    removeLoading,
+    getSingleTask,
+    handleDelete,
+    handleEdit,
+    goBack,
   };
 };
 
@@ -218,11 +187,11 @@ SingleTaskWithRedux.propTypes = {
   singleTask: propTypes.object,
   isEditable: propTypes.bool,
   loading: propTypes.bool.isRequired,
-  setSingleTask: propTypes.func.isRequired,
-  removeSingleTask: propTypes.func.isRequired,
   toggleHideAddEditTaskModal: propTypes.func.isRequired,
-  setLoading: propTypes.func.isRequired,
-  removeLoading: propTypes.func.isRequired,
+  getSingleTask: propTypes.func.isRequired,
+  handleDelete: propTypes.func.isRequired,
+  handleEdit: propTypes.func.isRequired,
+  goBack: propTypes.func.isRequired,
 };
 
 export default connect(
