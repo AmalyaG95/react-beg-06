@@ -50,7 +50,7 @@ const SingleTaskWithRedux = ({
         history.push(`/error/${error.status}`);
       }
     })();
-  }, [match.params, history]);
+  }, [match.params, history, setSingleTask]);
 
   const handleDelete = useCallback(async () => {
     const { id } = match.params;
@@ -71,7 +71,7 @@ const SingleTaskWithRedux = ({
     } finally {
       removeLoading();
     }
-  }, [match.params, history]); // ???????????????????????????????????
+  }, [removeLoading, removeSingleTask, setLoading, match.params, history]);
 
   const handleEdit = useCallback(
     async (editableTask) => {
@@ -96,13 +96,19 @@ const SingleTaskWithRedux = ({
         toggleHideAddEditTaskModal();
       }
     },
-    [singleTask] // ???????????????????????????????????
+    [
+      singleTask,
+      removeLoading,
+      setLoading,
+      setSingleTask,
+      toggleHideAddEditTaskModal,
+    ]
   );
 
   const goBack = useCallback(() => {
     history.goBack();
     removeSingleTask();
-  }, [history]); // ???????????????????????????????????
+  }, [history, removeSingleTask]);
 
   return (
     <>

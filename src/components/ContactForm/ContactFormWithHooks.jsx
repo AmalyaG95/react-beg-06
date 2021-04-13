@@ -58,7 +58,7 @@ const ContactFormWithHooks = ({ history }) => {
 
   useEffect(() => {
     nameInputRef.current.focus();
-  }, []);
+  }, [nameInputRef]);
 
   const closeErrorMessageAlert = () => {
     setIsOpenErrorMessageAlert(false);

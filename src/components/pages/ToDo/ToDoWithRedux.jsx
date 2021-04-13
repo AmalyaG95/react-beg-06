@@ -61,32 +61,35 @@ const ToDoWithRedux = ({
       .finally(() => {
         removeLoading();
       });
-  }, []);
+  }, [removeLoading, setLoading, setTasks]);
 
-  const handleAddTask = useCallback((newTaskData) => {
-    setLoading();
-    fetch(`${API_HOST}/task`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(newTaskData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw data.error;
-        }
-        addTask(data);
+  const handleAddTask = useCallback(
+    (newTaskData) => {
+      setLoading();
+      fetch(`${API_HOST}/task`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(newTaskData),
       })
-      .catch((error) => {
-        console.log("Add a task Error", error);
-      })
-      .finally(() => {
-        removeLoading();
-        toggleHideAddEditTaskModal();
-      });
-  }, []);
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            throw data.error;
+          }
+          addTask(data);
+        })
+        .catch((error) => {
+          console.log("Add a task Error", error);
+        })
+        .finally(() => {
+          removeLoading();
+          toggleHideAddEditTaskModal();
+        });
+    },
+    [addTask, removeLoading, setLoading, toggleHideAddEditTaskModal]
+  );
 
   const handleEditTask = useCallback(
     (editableTaskData) => {
@@ -114,28 +117,38 @@ const ToDoWithRedux = ({
           toggleHideAddEditTaskModal();
         });
     },
-    [editableTask]
+    [
+      editableTask,
+      editTask,
+      removeLoading,
+      setLoading,
+      toggleHideAddEditTaskModal,
+      toggleSetEditableTask,
+    ]
   );
 
-  const handleDeleteTask = useCallback((_id) => {
-    setLoading();
-    fetch(`${API_HOST}/task/${_id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          throw data.error;
-        }
-        deleteTask(_id);
+  const handleDeleteTask = useCallback(
+    (_id) => {
+      setLoading();
+      fetch(`${API_HOST}/task/${_id}`, {
+        method: "DELETE",
       })
-      .catch((error) => {
-        console.log("Delete a task Error", error);
-      })
-      .finally(() => {
-        removeLoading();
-      });
-  }, []);
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            throw data.error;
+          }
+          deleteTask(_id);
+        })
+        .catch((error) => {
+          console.log("Delete a task Error", error);
+        })
+        .finally(() => {
+          removeLoading();
+        });
+    },
+    [deleteTask, removeLoading, setLoading]
+  );
 
   const handleDeleteSelectedTasks = useCallback(() => {
     setLoading();
@@ -159,7 +172,7 @@ const ToDoWithRedux = ({
       .finally(() => {
         removeLoading();
       });
-  }, [selectedTasksIDs]);
+  }, [selectedTasksIDs, deleteSelectedTasks, removeLoading, setLoading]);
 
   const tasksJSX = tasks.map((task) => {
     return (
