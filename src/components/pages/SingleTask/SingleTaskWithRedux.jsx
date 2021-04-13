@@ -41,7 +41,11 @@ const SingleTaskWithRedux = ({
   handleEdit,
   goBack,
 }) => {
-  useEffect(() => getSingleTask(history, match), []);
+  useEffect(() => getSingleTask(history, match), [
+    getSingleTask,
+    history,
+    match,
+  ]);
 
   return (
     <>

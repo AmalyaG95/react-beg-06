@@ -77,6 +77,7 @@ const Task = ({
 
 Task.propTypes = {
   task: propTypes.shape({
+    _id: propTypes.string.isRequired,
     title: propTypes.string.isRequired,
     description: propTypes.string.isRequired,
     date: propTypes.string.isRequired,

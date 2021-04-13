@@ -49,7 +49,7 @@ const ToDoWithRedux = ({
   handleDeleteTask,
   handleDeleteSelectedTasks,
 }) => {
-  useEffect(getTasks, []);
+  useEffect(getTasks, [getTasks]);
 
   const tasksJSX = tasks.map((task) => {
     return (
@@ -179,7 +179,7 @@ const mapDispatchToProps = (dispatch) => {
   const selectAllTasks = (_id) => {
     dispatch({ type: types.SELECT_ALL_TASKS, _id });
   };
-  const deleteSelectedTasks = (_id) => {
+  const deleteSelectedTasks = () => {
     dispatch({ type: types.DELETE_SELECTED_TASKS });
   };
   const setTasks = (data) => {

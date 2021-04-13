@@ -21,7 +21,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   const {
     ToDoState,
-    ToDoState: { isOpenAddEditTaskModal, isOpenConfirmModal, editableTask },
+    ToDoState: { isOpenAddEditTaskModal, isOpenConfirmModal },
     SingleTaskState,
     SingleTaskState: { isEditable },
   } = state;

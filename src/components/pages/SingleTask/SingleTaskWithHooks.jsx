@@ -44,7 +44,7 @@ const SingleTaskWithHooks = ({ match, history }) => {
         history.push(`/error/${error.status}`);
       }
     })();
-  }, []);
+  }, [match.params, history]);
 
   const toggleHideAddEditTaskModal = () => {
     setIsEditable(!isEditable);

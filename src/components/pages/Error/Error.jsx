@@ -2,6 +2,7 @@ import styles from "./error.module.css";
 import notFound from "../../../assets/images/404.png";
 import internal from "../../../assets/images/500.png";
 import { Container, Row, Col } from "react-bootstrap";
+import propTypes from "prop-types";
 
 const Error = ({ match }) => {
   let error;
@@ -38,4 +39,9 @@ const Error = ({ match }) => {
     </Container>
   );
 };
+
+Error.propTypes = {
+  match: propTypes.func.isRequired,
+};
+
 export default Error;

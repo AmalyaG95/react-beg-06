@@ -25,7 +25,7 @@ const SingleTaskContextProvider = ({ children, match, history }) => {
         history.push(`/error/${error.status}`);
       }
     })();
-  }, []);
+  }, [match, history]);
 
   const toggleHideAddEditTaskModal = () => {
     setIsEditable(!isEditable);
