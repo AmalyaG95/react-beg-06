@@ -114,7 +114,7 @@ const ContactFormWithReducer = ({ history }) => {
 
   useEffect(() => {
     nameInputRef.current.focus();
-  }, []);
+  }, [nameInputRef]);
 
   const closeErrorMessageAlert = useCallback(() => {
     dispatch({ type: "CLOSE_ERROR_MESSAGE_ALERT" });

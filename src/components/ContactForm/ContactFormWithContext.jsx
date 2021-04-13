@@ -47,7 +47,7 @@ const ContactFormWithContext = () => {
 
   useEffect(() => {
     nameInputRef.current.focus();
-  }, []);
+  }, [nameInputRef]);
 
   const inputsJSX = inputsInfo.map((input, index) => {
     return (
