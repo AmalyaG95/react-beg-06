@@ -124,7 +124,7 @@ const SingleTaskWithReducer = ({ match, history }) => {
         dispatch({ type: "TOGGLE_HIDE_MODAL" });
       }
     },
-    [singleTask._id]
+    [singleTask]
   );
 
   const goBack = useCallback(() => {
