@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 import "./App.css";
 import Navbar from "./components/Navbar/Navbar";
 import ToDoWithRedux from "./components/pages/ToDo/ToDoWithRedux";
@@ -6,6 +8,8 @@ import Contact from "./components/pages/Contact/Contact";
 import About from "./components/pages/About/About";
 import Error from "./components/pages/Error/Error";
 import SingleTaskWithRedux from "./components/pages/SingleTask/SingleTaskWithRedux";
+import { ToastContainer, toast } from "react-toastify";
+import propTypes from "prop-types";
 
 const pages = [
   {
@@ -35,7 +39,33 @@ const pages = [
   },
 ];
 
-function App() {
+function App({ errorMessage, successMessage }) {
+  useEffect(() => {
+    errorMessage &&
+      toast.error(`${errorMessage}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+  }, [errorMessage]);
+
+  useEffect(() => {
+    successMessage &&
+      toast.success(`${successMessage}`, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+  }, [successMessage]);
+
   const pagesJSX = pages.map((page, index) => {
     return (
       <Route
@@ -58,11 +88,27 @@ function App() {
           <Redirect to="/error/404" />
         </Switch>
       </main>
+      <footer>{(errorMessage || successMessage) && <ToastContainer />}</footer>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  const {
+    globalState: { errorMessage, successMessage },
+  } = state;
 
-// 1.ContactForm կոմպոնենտը սարքել Redux-ով է
-// 2. npm i redux-logger
+  return {
+    errorMessage,
+    successMessage,
+  };
+};
+
+App.propTypes = {
+  errorMessage: propTypes.string,
+  successMessage: propTypes.string,
+};
+
+export default connect(mapStateToProps, null)(App);
+
+// 1. TaskModal կոմպոնենտը սարքել Redux-ով է

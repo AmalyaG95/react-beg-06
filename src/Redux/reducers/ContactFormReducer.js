@@ -1,5 +1,5 @@
-import types from "./actionsType";
-import validateForm from "../utils/validation/validateForm";
+import types from "../actionsType";
+import validateForm from "../../utils/validation/validateForm";
 
 const initialState = {
   name: {

@@ -3,7 +3,12 @@ import styles from "./task.module.css";
 import { Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faEdit,
+  faCheck,
+  faHourglassHalf,
+} from "@fortawesome/free-solid-svg-icons";
 import propTypes from "prop-types";
 
 const CardBodyCls = [
@@ -20,6 +25,7 @@ const Task = ({
   isAllChecked,
   handleDeleteTask,
   handleSelectTask,
+  handleChangeStatus,
   setEditableTask,
   onHide,
 }) => {
@@ -34,6 +40,9 @@ const Task = ({
   const handleEdit = () => {
     setEditableTask(task);
     onHide();
+  };
+  const handleChange = () => {
+    handleChangeStatus(task);
   };
 
   return (
@@ -68,6 +77,29 @@ const Task = ({
             >
               <FontAwesomeIcon icon={faEdit} style={{ fontSize: "15px" }} />
             </Button>
+            <Button
+              variant={"light"}
+              onClick={handleChange}
+              className={styles.deleteButton}
+              disabled={isAnyChecked}
+            >
+              {task.status === "done" ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  style={{
+                    fontSize: "15px",
+                    color: " rgb(5, 112, 112)",
+                  }}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faHourglassHalf}
+                  style={{
+                    fontSize: "15px",
+                  }}
+                />
+              )}
+            </Button>
           </div>
         </Card.Body>
       </Card>
@@ -87,6 +119,7 @@ Task.propTypes = {
   isAllChecked: propTypes.bool.isRequired,
   handleDeleteTask: propTypes.func.isRequired,
   handleSelectTask: propTypes.func.isRequired,
+  handleChangeStatus: propTypes.func.isRequired,
   setEditableTask: propTypes.func.isRequired,
   onHide: propTypes.func.isRequired,
 };

@@ -136,36 +136,11 @@ const mapDispatchToProps = (dispatch) => {
   const resetData = () => {
     dispatch({ type: types.RESET_CONTACT_FORM_DATA });
   };
-  const setErrorMessage = (error) => {
-    dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
-  };
-  const removeErrorMessage = () => {
-    dispatch({ type: types.REMOVE_ERROR_MESSAGE });
-  };
-  const setLoading = () => {
-    dispatch({ type: types.SET_LOADING });
-  };
-  const removeLoading = () => {
-    dispatch({ type: types.REMOVE_LOADING });
-  };
-  const openErrorMessageAlert = () => {
-    dispatch({ type: types.OPEN_ERROR_MESSAGE_ALERT });
-  };
   const closeErrorMessageAlert = () => {
     dispatch({ type: types.CLOSE_ERROR_MESSAGE_ALERT });
   };
   const handleSubmit = (history, formData) => {
-    dispatch(() =>
-      submitContactFormThunk(
-        history,
-        formData,
-        setLoading,
-        removeLoading,
-        setErrorMessage,
-        removeErrorMessage,
-        openErrorMessageAlert
-      )
-    );
+    dispatch(() => submitContactFormThunk(dispatch, history, formData));
   };
 
   return {

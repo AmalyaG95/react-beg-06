@@ -5,7 +5,7 @@ import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../../Spinner/Spinner";
-import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
+import AddEditTaskModalWithRedux from "../../AddEditTaskModal/AddEditTaskModalWithRedux";
 import propTypes from "prop-types";
 import types from "../../../Redux/actionsType";
 import {
@@ -115,7 +115,7 @@ const SingleTaskWithRedux = ({
         </Container>
       )}
       {isEditable && (
-        <AddEditTaskModal
+        <AddEditTaskModalWithRedux
           editableTask={singleTask}
           onSubmit={handleEdit}
           onHide={toggleHideAddEditTaskModal}
@@ -138,40 +138,20 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  const setSingleTask = (data) => {
-    dispatch({ type: types.SET_SINGLE_TASK, data });
-  };
   const toggleHideAddEditTaskModal = () => {
     dispatch({ type: types.TOGGLE_HIDE_MODAL });
   };
   const resetData = () => {
     dispatch({ type: types.RESET_SINGLE_TASK_DATA });
   };
-  const setLoading = () => {
-    dispatch({ type: types.SET_LOADING });
-  };
-  const removeLoading = () => {
-    dispatch({ type: types.REMOVE_LOADING });
-  };
   const getSingleTask = (history, match) => {
-    dispatch(() => getSingleTaskThunk(history, match, setSingleTask));
+    dispatch(() => getSingleTaskThunk(dispatch, history, match));
   };
   const handleDelete = (history, match) => {
-    dispatch(() =>
-      deleteSingleTaskThunk(history, match, setLoading, removeLoading)
-    );
+    dispatch(() => deleteSingleTaskThunk(dispatch, history, match));
   };
   const handleEdit = (editableTask, singleTask) => {
-    dispatch(() =>
-      editSingleTaskThunk(
-        singleTask,
-        editableTask,
-        setLoading,
-        removeLoading,
-        setSingleTask,
-        toggleHideAddEditTaskModal
-      )
-    );
+    dispatch(() => editSingleTaskThunk(dispatch, singleTask, editableTask));
   };
   const goBack = (history) => {
     dispatch(() => goBackThunk(history));

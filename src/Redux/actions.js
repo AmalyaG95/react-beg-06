@@ -1,32 +1,32 @@
+import types from "./actionsType";
+import formatDate from "../utils/formatDate";
 const API_HOST = "http://localhost:3001";
 
 // ToDo actions
-export const getTasksThunk = (setTasks, setLoading, removeLoading) => {
-  setLoading();
+export const getTasksThunk = (dispatch) => {
+  dispatch({ type: types.SET_LOADING });
+  dispatch({ type: types.REMOVE_ERROR_MESSAGE });
+  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   fetch(`${API_HOST}/task`)
     .then((res) => res.json())
     .then((data) => {
       if (data.error) {
         throw data.error;
       }
-      setTasks(data);
+      dispatch({ type: types.SET_TASKS, data });
     })
     .catch((error) => {
-      console.log("Get all tasks Error", error);
+      dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
     })
     .finally(() => {
-      removeLoading();
+      dispatch({ type: types.REMOVE_LOADING });
     });
 };
 
-export const addTaskThunk = (
-  newTaskData,
-  addTask,
-  setLoading,
-  removeLoading,
-  toggleHideAddEditTaskModal
-) => {
-  setLoading();
+export const addTaskThunk = (dispatch, newTaskData) => {
+  dispatch({ type: types.SET_LOADING });
+  dispatch({ type: types.REMOVE_ERROR_MESSAGE });
+  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   fetch(`${API_HOST}/task`, {
     method: "POST",
     headers: {
@@ -39,27 +39,25 @@ export const addTaskThunk = (
       if (data.error) {
         throw data.error;
       }
-      addTask(data);
+      dispatch({ type: types.ADD_TASK, data });
+      dispatch({
+        type: types.SET_SUCCESS_MESSAGE,
+        successMessage: "Task was added successfully",
+      });
     })
     .catch((error) => {
-      console.log("Add a task Error", error);
+      dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
     })
     .finally(() => {
-      removeLoading();
-      toggleHideAddEditTaskModal();
+      dispatch({ type: types.REMOVE_LOADING });
+      dispatch({ type: types.SET_IS_OPEN_TASK_MODAL });
     });
 };
 
-export const editTaskThunk = (
-  editableTask,
-  editableTaskData,
-  editTask,
-  toggleSetEditableTask,
-  setLoading,
-  removeLoading,
-  toggleHideAddEditTaskModal
-) => {
-  setLoading();
+export const editTaskThunk = (dispatch, editableTask, editableTaskData) => {
+  dispatch({ type: types.SET_LOADING });
+  dispatch({ type: types.REMOVE_ERROR_MESSAGE });
+  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   fetch(`${API_HOST}/task/${editableTask._id}`, {
     method: "PUT",
     headers: {
@@ -72,20 +70,26 @@ export const editTaskThunk = (
       if (data.error) {
         throw data.error;
       }
-      editTask(data);
-      toggleSetEditableTask();
+      dispatch({ type: types.EDIT_TASK, data });
+      dispatch({
+        type: types.SET_SUCCESS_MESSAGE,
+        successMessage: "Task was edited successfully",
+      });
+      dispatch({ type: types.SET_EDITABLE_TASK });
     })
     .catch((error) => {
-      console.log("Edit a task Error", error);
+      dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
     })
     .finally(() => {
-      removeLoading();
-      toggleHideAddEditTaskModal();
+      dispatch({ type: types.REMOVE_LOADING });
+      dispatch({ type: types.SET_IS_OPEN_TASK_MODAL });
     });
 };
 
-export const deleteTaskThunk = (_id, deleteTask, setLoading, removeLoading) => {
-  setLoading();
+export const deleteTaskThunk = (dispatch, _id) => {
+  dispatch({ type: types.SET_LOADING });
+  dispatch({ type: types.REMOVE_ERROR_MESSAGE });
+  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   fetch(`${API_HOST}/task/${_id}`, {
     method: "DELETE",
   })
@@ -94,23 +98,24 @@ export const deleteTaskThunk = (_id, deleteTask, setLoading, removeLoading) => {
       if (data.error) {
         throw data.error;
       }
-      deleteTask(_id);
+      dispatch({ type: types.DELETE_TASK, _id });
+      dispatch({
+        type: types.SET_SUCCESS_MESSAGE,
+        successMessage: "Task was deleted successfully",
+      });
     })
     .catch((error) => {
-      console.log("Delete a task Error", error);
+      dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
     })
     .finally(() => {
-      removeLoading();
+      dispatch({ type: types.REMOVE_LOADING });
     });
 };
 
-export const deleteSelectedTasksThunk = (
-  selectedTasksIDs,
-  deleteSelectedTasks,
-  setLoading,
-  removeLoading
-) => {
-  setLoading();
+export const deleteSelectedTasksThunk = (dispatch, selectedTasksIDs) => {
+  dispatch({ type: types.SET_LOADING });
+  dispatch({ type: types.REMOVE_ERROR_MESSAGE });
+  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   fetch(`${API_HOST}/task`, {
     method: "PATCH",
     headers: {
@@ -123,18 +128,43 @@ export const deleteSelectedTasksThunk = (
       if (data.error) {
         throw data.error;
       }
-      deleteSelectedTasks();
+      dispatch({ type: types.DELETE_SELECTED_TASKS });
+      dispatch({
+        type: types.SET_SUCCESS_MESSAGE,
+        successMessage: "Selected tasks were deleted successfully",
+      });
     })
     .catch((error) => {
-      console.log("Delete selected tasks Error", error);
+      dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
     })
     .finally(() => {
-      removeLoading();
+      dispatch({ type: types.REMOVE_LOADING });
     });
 };
 
+export const changeTaskStatusThunk = async (dispatch, task) => {
+  const status = task.status === "done" ? "active" : "done";
+
+  try {
+    const data = await fetch(`${API_HOST}/task/${task._id}`, {
+      method: "put",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    }).then((res) => res.json());
+
+    if (data.error) {
+      throw data.error;
+    }
+    dispatch({ type: types.EDIT_TASK, data });
+  } catch (error) {
+    dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
+  }
+};
+
 // SingleTask actions
-export const getSingleTaskThunk = async (history, match, setSingleTask) => {
+export const getSingleTaskThunk = async (dispatch, history, match) => {
   const { id } = match.params;
 
   try {
@@ -142,22 +172,18 @@ export const getSingleTaskThunk = async (history, match, setSingleTask) => {
       res.json()
     );
     if (data.error) throw data.error;
-    setSingleTask(data);
+    dispatch({ type: types.SET_SINGLE_TASK, data });
   } catch (error) {
-    console.log("Get the single task Error ", error);
     history.push(`/error/${error.status}`);
   }
 };
 
-export const deleteSingleTaskThunk = async (
-  history,
-  match,
-  setLoading,
-  removeLoading
-) => {
+export const deleteSingleTaskThunk = async (dispatch, history, match) => {
   const { id } = match.params;
 
-  setLoading();
+  dispatch({ type: types.SET_LOADING });
+  dispatch({ type: types.REMOVE_ERROR_MESSAGE });
+  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   try {
     const data = await fetch(`${API_HOST}/task/${id}`, {
       method: "DELETE",
@@ -168,21 +194,20 @@ export const deleteSingleTaskThunk = async (
     }
     history.push("/");
   } catch (error) {
-    console.log("Delete the single task Error", error);
+    dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
   } finally {
-    removeLoading();
+    dispatch({ type: types.REMOVE_LOADING });
   }
 };
 
 export const editSingleTaskThunk = async (
+  dispatch,
   singleTask,
-  editableTask,
-  setLoading,
-  removeLoading,
-  setSingleTask,
-  toggleHideAddEditTaskModal
+  editableTask
 ) => {
-  setLoading();
+  dispatch({ type: types.SET_LOADING });
+  dispatch({ type: types.REMOVE_ERROR_MESSAGE });
+  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   try {
     const data = await fetch(`${API_HOST}/task/${singleTask._id}`, {
       method: "PUT",
@@ -195,12 +220,16 @@ export const editSingleTaskThunk = async (
     if (data.error) {
       throw data.error;
     }
-    setSingleTask(data);
+    dispatch({ type: types.SET_SINGLE_TASK, data });
+    dispatch({
+      type: types.SET_SUCCESS_MESSAGE,
+      successMessage: "Task was edited successfully",
+    });
   } catch (error) {
-    console.log("Edit the single task Error", error);
+    dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
   } finally {
-    removeLoading();
-    toggleHideAddEditTaskModal();
+    dispatch({ type: types.REMOVE_LOADING });
+    dispatch({ type: types.SET_IS_OPEN_TASK_MODAL });
   }
 };
 
@@ -209,22 +238,16 @@ export const goBackThunk = (history) => {
 };
 
 // ContactForm actions
-export const submitContactFormThunk = (
-  history,
-  formData,
-  setLoading,
-  removeLoading,
-  setErrorMessage,
-  removeErrorMessage,
-  openErrorMessageAlert
-) => {
+export const submitContactFormThunk = (dispatch, history, formData) => {
   const formDataCopy = { ...formData };
+
   for (let key in formDataCopy) {
     formDataCopy[key] = formDataCopy[key].value;
   }
 
-  setLoading();
-  removeErrorMessage();
+  dispatch({ type: types.SET_LOADING });
+  dispatch({ type: types.REMOVE_ERROR_MESSAGE });
+  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   (async () => {
     try {
       const data = await fetch(`${API_HOST}/form`, {
@@ -238,12 +261,30 @@ export const submitContactFormThunk = (
       if (data.error) {
         throw data.error;
       }
+      dispatch({
+        type: types.SET_SUCCESS_MESSAGE,
+        successMessage: "Contact message was sent successfully",
+      });
       history.push("/");
     } catch (error) {
-      console.log("Send Contact Form data Error", error);
-      removeLoading();
-      setErrorMessage(error);
-      openErrorMessageAlert();
+      dispatch({ type: types.REMOVE_LOADING });
+      dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
+      dispatch({ type: types.OPEN_ERROR_MESSAGE_ALERT });
     }
   })();
+};
+// AddEditTaskModal actions
+export const submitTask = (type, key, formData, editableTask, onSubmit) => {
+  const { title, description, date } = formData;
+
+  if (
+    !title.trim() ||
+    !description.trim() ||
+    (type === "keypress" && key !== "Enter")
+  )
+    return;
+
+  editableTask
+    ? onSubmit({ ...formData, date: formatDate(date) }, editableTask)
+    : onSubmit({ ...formData, date: formatDate(date) });
 };

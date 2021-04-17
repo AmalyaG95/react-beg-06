@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import styles from "./toDo.module.css";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import Task from "../../Task/Task";
-import AddEditTaskModal from "../../AddEditTaskModal/AddEditTaskModal";
+import AddEditTaskModalWithRedux from "../../AddEditTaskModal/AddEditTaskModalWithRedux";
 import Spinner from "../../Spinner/Spinner";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import propTypes from "prop-types";
@@ -14,6 +14,7 @@ import {
   editTaskThunk,
   deleteTaskThunk,
   deleteSelectedTasksThunk,
+  changeTaskStatusThunk,
 } from "../../../Redux/actions";
 
 const ContainerCls = ["d-flex ", "flex-column", "align-content-center", "py-4"];
@@ -43,6 +44,7 @@ const ToDoWithRedux = ({
   toggleSetEditableTask,
   selectTask,
   selectAllTasks,
+  changeTaskStatus,
   resetData,
   getTasks,
   handleAddTask,
@@ -68,6 +70,7 @@ const ToDoWithRedux = ({
           task={task}
           handleDeleteTask={handleDeleteTask}
           handleSelectTask={selectTask}
+          handleChangeStatus={changeTaskStatus}
           setEditableTask={toggleSetEditableTask}
           onHide={toggleHideAddEditTaskModal}
           isChecked={selectedTasksIDs.has(task._id)}
@@ -133,7 +136,7 @@ const ToDoWithRedux = ({
       </Container>
 
       {isOpenAddEditTaskModal && (
-        <AddEditTaskModal
+        <AddEditTaskModalWithRedux
           editableTask={editableTask}
           onSubmit={editableTask ? handleEditTask : handleAddTask}
           onHide={toggleHideAddEditTaskModal}
@@ -178,75 +181,32 @@ const mapDispatchToProps = (dispatch) => {
   const toggleSetEditableTask = (editableTask = null) => {
     dispatch({ type: types.SET_EDITABLE_TASK, editableTask });
   };
-  const addTask = (data) => {
-    dispatch({ type: types.ADD_TASK, data });
-  };
-  const editTask = (data) => {
-    dispatch({ type: types.EDIT_TASK, data });
-  };
-  const deleteTask = (_id) => {
-    dispatch({ type: types.DELETE_TASK, _id });
-  };
   const selectTask = (_id) => {
     dispatch({ type: types.SELECT_TASK, _id });
   };
   const selectAllTasks = (_id) => {
     dispatch({ type: types.SELECT_ALL_TASKS, _id });
   };
-  const deleteSelectedTasks = () => {
-    dispatch({ type: types.DELETE_SELECTED_TASKS });
-  };
-  const setTasks = (data) => {
-    dispatch({ type: types.SET_TASKS, data });
+  const changeTaskStatus = (task) => {
+    dispatch(() => changeTaskStatusThunk(dispatch, task));
   };
   const resetData = () => {
     dispatch({ type: types.RESET_TODO_DATA });
   };
-  const setLoading = () => {
-    dispatch({ type: types.SET_LOADING });
-  };
-  const removeLoading = () => {
-    dispatch({ type: types.REMOVE_LOADING });
-  };
   const getTasks = () => {
-    dispatch(() => getTasksThunk(setTasks, setLoading, removeLoading));
+    dispatch(getTasksThunk);
   };
   const handleAddTask = (newTaskData) => {
-    dispatch(() =>
-      addTaskThunk(
-        newTaskData,
-        addTask,
-        setLoading,
-        removeLoading,
-        toggleHideAddEditTaskModal
-      )
-    );
+    dispatch(() => addTaskThunk(dispatch, newTaskData));
   };
   const handleEditTask = (editableTaskData, editableTask) => {
-    dispatch(() =>
-      editTaskThunk(
-        editableTask,
-        editableTaskData,
-        editTask,
-        toggleSetEditableTask,
-        setLoading,
-        removeLoading,
-        toggleHideAddEditTaskModal
-      )
-    );
+    dispatch(() => editTaskThunk(dispatch, editableTask, editableTaskData));
   };
   const handleDeleteTask = (_id) => {
-    dispatch(() => deleteTaskThunk(_id, deleteTask, setLoading, removeLoading));
+    dispatch(() => deleteTaskThunk(dispatch, _id));
   };
   const handleDeleteSelectedTasks = (selectedTasksIDs) => {
-    dispatch(() =>
-      deleteSelectedTasksThunk(
-        selectedTasksIDs,
-        deleteSelectedTasks,
-        setLoading,
-        removeLoading
-      )
-    );
+    dispatch(() => deleteSelectedTasksThunk(dispatch, selectedTasksIDs));
   };
 
   return {
@@ -255,6 +215,7 @@ const mapDispatchToProps = (dispatch) => {
     toggleSetEditableTask,
     selectTask,
     selectAllTasks,
+    changeTaskStatus,
     resetData,
     getTasks,
     handleAddTask,
@@ -277,6 +238,7 @@ ToDoWithRedux.propTypes = {
   toggleSetEditableTask: propTypes.func.isRequired,
   selectTask: propTypes.func.isRequired,
   selectAllTasks: propTypes.func.isRequired,
+  changeTaskStatus: propTypes.func.isRequired,
   resetData: propTypes.func.isRequired,
   getTasks: propTypes.func.isRequired,
   handleAddTask: propTypes.func.isRequired,
