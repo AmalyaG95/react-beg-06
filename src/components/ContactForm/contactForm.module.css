@@ -1,6 +1,6 @@
 .input {
   border-radius: 5px;
-  padding: 8px 15px;
+  padding: 8px 30px 8px 15px;
   height: 40px;
 }
 
@@ -33,7 +33,7 @@
 
 .valid {
   position: absolute;
-  right: 15px;
+  right: 10px;
   top: 9px;
 }
 

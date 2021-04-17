@@ -43,13 +43,19 @@ const ToDoWithRedux = ({
   toggleSetEditableTask,
   selectTask,
   selectAllTasks,
+  resetData,
   getTasks,
   handleAddTask,
   handleEditTask,
   handleDeleteTask,
   handleDeleteSelectedTasks,
 }) => {
-  useEffect(getTasks, [getTasks]);
+  useEffect(() => {
+    getTasks();
+    return () => {
+      resetData();
+    };
+  }, [getTasks, resetData]);
 
   const tasksJSX = tasks.map((task) => {
     return (
@@ -90,8 +96,13 @@ const ToDoWithRedux = ({
         </Row>
 
         <Row className="mt-1 mb-5 justify-content-center">
-          {!!tasksJSX.length && tasksJSX}
-          {!loading && !tasksJSX.length && (
+          {/* {!!tasksJSX.length && tasksJSX} */}
+          {/* {!loading && !tasksJSX.length &&  */}
+          {!!tasksJSX.length ? (
+            tasksJSX
+          ) : loading ? (
+            ""
+          ) : (
             <Col className={noTasksCls.join(" ")}> NO TASKS !</Col>
           )}
         </Row>
@@ -146,7 +157,10 @@ const ToDoWithRedux = ({
 };
 
 const mapStateToProps = (state) => {
-  const { ToDoState, loading } = state;
+  const {
+    ToDoState,
+    globalState: { loading },
+  } = state;
 
   return {
     ToDoState,
@@ -184,6 +198,9 @@ const mapDispatchToProps = (dispatch) => {
   };
   const setTasks = (data) => {
     dispatch({ type: types.SET_TASKS, data });
+  };
+  const resetData = () => {
+    dispatch({ type: types.RESET_TODO_DATA });
   };
   const setLoading = () => {
     dispatch({ type: types.SET_LOADING });
@@ -238,6 +255,7 @@ const mapDispatchToProps = (dispatch) => {
     toggleSetEditableTask,
     selectTask,
     selectAllTasks,
+    resetData,
     getTasks,
     handleAddTask,
     handleEditTask,
@@ -259,6 +277,7 @@ ToDoWithRedux.propTypes = {
   toggleSetEditableTask: propTypes.func.isRequired,
   selectTask: propTypes.func.isRequired,
   selectAllTasks: propTypes.func.isRequired,
+  resetData: propTypes.func.isRequired,
   getTasks: propTypes.func.isRequired,
   handleAddTask: propTypes.func.isRequired,
   handleEditTask: propTypes.func.isRequired,

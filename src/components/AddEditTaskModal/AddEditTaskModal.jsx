@@ -5,7 +5,7 @@ import propTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import formatDate from "../../utils/formatDate";
 
-export class AddEditTaskModal extends Component {
+class AddEditTaskModal extends Component {
   constructor(props) {
     super(props);
     this.titleInputRef = createRef();

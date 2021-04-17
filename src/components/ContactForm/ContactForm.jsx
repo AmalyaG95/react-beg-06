@@ -184,7 +184,7 @@ export class ContactForm extends Component {
             variant="info"
             onClick={this.handleSubmit}
             className={styles.button}
-            // disabled={!name.isValid || !email.isValid || !message.isValid}
+            disabled={!name.isValid || !email.isValid || !message.isValid}
           >
             Send
           </Button>

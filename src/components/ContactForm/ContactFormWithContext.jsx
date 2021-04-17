@@ -94,7 +94,7 @@ const ContactFormWithContext = () => {
   return (
     <>
       <Form noValidate>
-        {isOpenErrorMessageAlert && (
+        {isOpenErrorMessageAlert && !loading && (
           <ErrorMessageAlert
             errorMessage={errorMessage}
             closeErrorMessageAlert={closeErrorMessageAlert}

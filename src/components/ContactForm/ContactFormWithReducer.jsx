@@ -1,4 +1,4 @@
-import { createRef, useEffect, useReducer, useCallback, memo } from "react";
+import { useRef, useEffect, useReducer, useCallback, memo } from "react";
 import styles from "./contactForm.module.css";
 import { Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +9,7 @@ import {
 import Spinner from "../Spinner/Spinner";
 import ErrorMessageAlert from "../ErrorMessageAlert/ErrorMessageAlert";
 import propTypes from "prop-types";
-import validateForm from "../../utils/validateForm";
+import validateForm from "../../utils/validation/validateForm";
 
 const API_HOST = "http://localhost:3001";
 const inputsInfo = [
@@ -109,12 +109,12 @@ const reducer = (state = initialState, action) => {
 
 const ContactFormWithReducer = ({ history }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const nameInputRef = createRef();
   const { name, email, message } = state.inputs;
+  const nameInputRef = useRef();
 
   useEffect(() => {
     nameInputRef.current.focus();
-  }, [nameInputRef]);
+  }, []);
 
   const closeErrorMessageAlert = useCallback(() => {
     dispatch({ type: "CLOSE_ERROR_MESSAGE_ALERT" });
@@ -201,7 +201,7 @@ const ContactFormWithReducer = ({ history }) => {
   return (
     <>
       <Form noValidate>
-        {state.isOpenErrorMessageAlert && (
+        {state.isOpenErrorMessageAlert && !state.loading && (
           <ErrorMessageAlert
             errorMessage={state.errorMessage}
             closeErrorMessageAlert={closeErrorMessageAlert}

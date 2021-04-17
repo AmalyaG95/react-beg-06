@@ -36,16 +36,19 @@ const SingleTaskWithRedux = ({
   SingleTaskState: { singleTask, isEditable },
   loading,
   toggleHideAddEditTaskModal,
+  resetData,
   getSingleTask,
   handleDelete,
   handleEdit,
   goBack,
 }) => {
-  useEffect(() => getSingleTask(history, match), [
-    getSingleTask,
-    history,
-    match,
-  ]);
+  useEffect(() => {
+    getSingleTask(history, match);
+
+    return () => {
+      resetData();
+    };
+  }, [history, match, getSingleTask, resetData]);
 
   return (
     <>
@@ -124,7 +127,10 @@ const SingleTaskWithRedux = ({
 };
 
 const mapStateToProps = (state) => {
-  const { SingleTaskState, loading } = state;
+  const {
+    SingleTaskState,
+    globalState: { loading },
+  } = state;
 
   return {
     SingleTaskState,
@@ -135,11 +141,11 @@ const mapDispatchToProps = (dispatch) => {
   const setSingleTask = (data) => {
     dispatch({ type: types.SET_SINGLE_TASK, data });
   };
-  const removeSingleTask = () => {
-    dispatch({ type: types.REMOVE_SINGLE_TASK });
-  };
   const toggleHideAddEditTaskModal = () => {
     dispatch({ type: types.TOGGLE_HIDE_MODAL });
+  };
+  const resetData = () => {
+    dispatch({ type: types.RESET_SINGLE_TASK_DATA });
   };
   const setLoading = () => {
     dispatch({ type: types.SET_LOADING });
@@ -152,13 +158,7 @@ const mapDispatchToProps = (dispatch) => {
   };
   const handleDelete = (history, match) => {
     dispatch(() =>
-      deleteSingleTaskThunk(
-        history,
-        match,
-        setLoading,
-        removeLoading,
-        removeSingleTask
-      )
+      deleteSingleTaskThunk(history, match, setLoading, removeLoading)
     );
   };
   const handleEdit = (editableTask, singleTask) => {
@@ -174,10 +174,11 @@ const mapDispatchToProps = (dispatch) => {
     );
   };
   const goBack = (history) => {
-    dispatch(() => goBackThunk(history, removeSingleTask));
+    dispatch(() => goBackThunk(history));
   };
   return {
     toggleHideAddEditTaskModal,
+    resetData,
     getSingleTask,
     handleDelete,
     handleEdit,
@@ -192,6 +193,7 @@ SingleTaskWithRedux.propTypes = {
   isEditable: propTypes.bool,
   loading: propTypes.bool.isRequired,
   toggleHideAddEditTaskModal: propTypes.func.isRequired,
+  resetData: propTypes.func.isRequired,
   getSingleTask: propTypes.func.isRequired,
   handleDelete: propTypes.func.isRequired,
   handleEdit: propTypes.func.isRequired,

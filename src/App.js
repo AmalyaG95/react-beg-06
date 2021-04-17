@@ -64,5 +64,5 @@ function App() {
 
 export default App;
 
-// 1․ SingleTask ը սարքում ենք redux ով
-// 2․ Մեկ էլ ToDo ն
+// 1.ContactForm կոմպոնենտը սարքել Redux-ով է
+// 2. npm i redux-logger

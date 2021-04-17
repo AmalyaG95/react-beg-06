@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
 import propTypes from "prop-types";
-import validateForm from "../../utils/validateForm";
+import validateForm from "../../utils/validation/validateForm";
 import { contactFormContext } from "../contexts";
 
 const API_HOST = "http://localhost:3001";

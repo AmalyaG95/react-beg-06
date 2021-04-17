@@ -1,6 +1,6 @@
 const API_HOST = "http://localhost:3001";
 
-//ToDo actions
+// ToDo actions
 export const getTasksThunk = (setTasks, setLoading, removeLoading) => {
   setLoading();
   fetch(`${API_HOST}/task`)
@@ -133,7 +133,7 @@ export const deleteSelectedTasksThunk = (
     });
 };
 
-//SingleTask actions
+// SingleTask actions
 export const getSingleTaskThunk = async (history, match, setSingleTask) => {
   const { id } = match.params;
 
@@ -153,8 +153,7 @@ export const deleteSingleTaskThunk = async (
   history,
   match,
   setLoading,
-  removeLoading,
-  removeSingleTask
+  removeLoading
 ) => {
   const { id } = match.params;
 
@@ -168,7 +167,6 @@ export const deleteSingleTaskThunk = async (
       throw data.error;
     }
     history.push("/");
-    removeSingleTask();
   } catch (error) {
     console.log("Delete the single task Error", error);
   } finally {
@@ -206,7 +204,46 @@ export const editSingleTaskThunk = async (
   }
 };
 
-export const goBackThunk = (history, removeSingleTask) => {
+export const goBackThunk = (history) => {
   history.goBack();
-  removeSingleTask();
+};
+
+// ContactForm actions
+export const submitContactFormThunk = (
+  history,
+  formData,
+  setLoading,
+  removeLoading,
+  setErrorMessage,
+  removeErrorMessage,
+  openErrorMessageAlert
+) => {
+  const formDataCopy = { ...formData };
+  for (let key in formDataCopy) {
+    formDataCopy[key] = formDataCopy[key].value;
+  }
+
+  setLoading();
+  removeErrorMessage();
+  (async () => {
+    try {
+      const data = await fetch(`${API_HOST}/form`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(formDataCopy),
+      }).then((res) => res.json());
+
+      if (data.error) {
+        throw data.error;
+      }
+      history.push("/");
+    } catch (error) {
+      console.log("Send Contact Form data Error", error);
+      removeLoading();
+      setErrorMessage(error);
+      openErrorMessageAlert();
+    }
+  })();
 };
