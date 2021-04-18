@@ -41,7 +41,7 @@ const Error = ({ match }) => {
 };
 
 Error.propTypes = {
-  match: propTypes.func.isRequired,
+  match: propTypes.object.isRequired,
 };
 
 export default Error;
