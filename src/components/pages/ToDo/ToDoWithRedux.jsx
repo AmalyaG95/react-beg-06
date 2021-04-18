@@ -137,7 +137,6 @@ const ToDoWithRedux = ({
 
       {isOpenAddEditTaskModal && (
         <AddEditTaskModalWithRedux
-          editableTask={editableTask}
           onSubmit={editableTask ? handleEditTask : handleAddTask}
           onHide={toggleHideAddEditTaskModal}
         />

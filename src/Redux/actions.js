@@ -6,7 +6,6 @@ const API_HOST = "http://localhost:3001";
 export const getTasksThunk = (dispatch) => {
   dispatch({ type: types.SET_LOADING });
   dispatch({ type: types.REMOVE_ERROR_MESSAGE });
-  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   fetch(`${API_HOST}/task`)
     .then((res) => res.json())
     .then((data) => {
@@ -75,7 +74,7 @@ export const editTaskThunk = (dispatch, editableTask, editableTaskData) => {
         type: types.SET_SUCCESS_MESSAGE,
         successMessage: "Task was edited successfully",
       });
-      dispatch({ type: types.SET_EDITABLE_TASK });
+      dispatch({ type: types.SET_EDITABLE_TASK, editableTask: null });
     })
     .catch((error) => {
       dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
@@ -183,7 +182,6 @@ export const deleteSingleTaskThunk = async (dispatch, history, match) => {
 
   dispatch({ type: types.SET_LOADING });
   dispatch({ type: types.REMOVE_ERROR_MESSAGE });
-  dispatch({ type: types.REMOVE_SUCCESS_MESSAGE });
   try {
     const data = await fetch(`${API_HOST}/task/${id}`, {
       method: "DELETE",
@@ -192,6 +190,7 @@ export const deleteSingleTaskThunk = async (dispatch, history, match) => {
     if (data.error) {
       throw data.error;
     }
+    console.log("DELETE data", data);
     history.push("/");
   } catch (error) {
     dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
@@ -220,6 +219,7 @@ export const editSingleTaskThunk = async (
     if (data.error) {
       throw data.error;
     }
+    console.log("SET_SINGLE_TASK", data);
     dispatch({ type: types.SET_SINGLE_TASK, data });
     dispatch({
       type: types.SET_SUCCESS_MESSAGE,
@@ -229,7 +229,7 @@ export const editSingleTaskThunk = async (
     dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
   } finally {
     dispatch({ type: types.REMOVE_LOADING });
-    dispatch({ type: types.SET_IS_OPEN_TASK_MODAL });
+    dispatch({ type: types.TOGGLE_HIDE_MODAL });
   }
 };
 
@@ -263,13 +263,19 @@ export const submitContactFormThunk = (dispatch, history, formData) => {
       }
       dispatch({
         type: types.SET_SUCCESS_MESSAGE,
-        successMessage: "Contact message was sent successfully",
+        successMessage: "Your message was sent successfully",
       });
       history.push("/");
     } catch (error) {
+      console.log(error);
       dispatch({ type: types.REMOVE_LOADING });
-      dispatch({ type: types.SET_ERROR_MESSAGE, errorMessage: error.message });
-      dispatch({ type: types.OPEN_ERROR_MESSAGE_ALERT });
+      dispatch({
+        type: types.SET_ERROR_MESSAGE,
+        errorMessage:
+          error.name === "ValidationError"
+            ? error.message.slice(6, error.message.length)
+            : error.message,
+      });
     }
   })();
 };

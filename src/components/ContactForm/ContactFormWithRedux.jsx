@@ -8,7 +8,6 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../Spinner/Spinner";
-import ErrorMessageAlert from "../ErrorMessageAlert/ErrorMessageAlert";
 import propTypes from "prop-types";
 import types from "../../Redux/actionsType";
 import { submitContactFormThunk } from "../../Redux/actions";
@@ -100,12 +99,6 @@ const ContactFormWithRedux = ({
   return (
     <>
       <Form noValidate>
-        {isOpenErrorMessageAlert && !loading && (
-          <ErrorMessageAlert
-            errorMessage={errorMessage}
-            closeErrorMessageAlert={closeErrorMessageAlert}
-          />
-        )}
         {inputsJSX}
         <Button
           variant="info"
@@ -136,9 +129,6 @@ const mapDispatchToProps = (dispatch) => {
   const resetData = () => {
     dispatch({ type: types.RESET_CONTACT_FORM_DATA });
   };
-  const closeErrorMessageAlert = () => {
-    dispatch({ type: types.CLOSE_ERROR_MESSAGE_ALERT });
-  };
   const handleSubmit = (history, formData) => {
     dispatch(() => submitContactFormThunk(dispatch, history, formData));
   };
@@ -147,7 +137,6 @@ const mapDispatchToProps = (dispatch) => {
     handleChange,
     resetData,
     handleSubmit,
-    closeErrorMessageAlert,
   };
 };
 
@@ -160,11 +149,9 @@ ContactFormWithRedux.propTypes = {
   }),
   loading: propTypes.bool,
   errorMessage: propTypes.string,
-  isOpenErrorMessageAlert: propTypes.bool,
   handleChange: propTypes.func.isRequired,
   resetData: propTypes.func.isRequired,
   handleSubmit: propTypes.func.isRequired,
-  closeErrorMessageAlert: propTypes.func.isRequired,
 };
 
 export default connect(

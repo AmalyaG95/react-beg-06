@@ -4,7 +4,6 @@ const initialState = {
   loading: false,
   errorMessage: "",
   successMessage: "",
-  isOpenErrorMessageAlert: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -45,18 +44,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         successMessage: "",
-      };
-    }
-    case types.OPEN_ERROR_MESSAGE_ALERT: {
-      return {
-        ...state,
-        isOpenErrorMessageAlert: true,
-      };
-    }
-    case types.CLOSE_ERROR_MESSAGE_ALERT: {
-      return {
-        ...state,
-        isOpenErrorMessageAlert: false,
       };
     }
     default:

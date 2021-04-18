@@ -24,6 +24,7 @@ const reducer = (state = initialState, action) => {
     case types.RESET_SINGLE_TASK_DATA: {
       return {
         ...initialState,
+        isEditable,
       };
     }
     default:

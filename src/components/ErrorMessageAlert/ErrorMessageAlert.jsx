@@ -10,9 +10,7 @@ const ErrorMessageAlert = ({ errorMessage, closeErrorMessageAlert }) => {
       onClose={closeErrorMessageAlert}
       className={styles.alert}
     >
-      <Form.Text className={styles.backendError}>
-        {errorMessage.slice(6, errorMessage.length)}
-      </Form.Text>
+      <Form.Text className={styles.backendError}>{errorMessage}</Form.Text>
     </Alert>
   );
 };

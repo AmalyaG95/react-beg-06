@@ -8,7 +8,8 @@ import types from "../../Redux/actionsType";
 import { submitTask } from "../../Redux/actions";
 
 const AddEditTaskModalWithRedux = ({
-  editableTask,
+  ToDoState,
+  SingleTaskState,
   AddEditTaskModalState,
   AddEditTaskModalState: { title, description, date },
   onHide,
@@ -17,15 +18,30 @@ const AddEditTaskModalWithRedux = ({
   handleChangeDate,
   resetData,
   handleSubmit,
+  setEditableTaskData,
 }) => {
   const titleInputRef = useRef();
+  const editableTask =
+    ToDoState.editableTask ?? SingleTaskState.singleTask ?? null;
 
   useEffect(() => {
     titleInputRef.current.focus();
+
     return () => {
       resetData();
     };
   }, [resetData]);
+
+  useEffect(() => {
+    if (editableTask) {
+      const editableTaskData = {
+        title: editableTask.title,
+        description: editableTask.description,
+        date: new Date(editableTask.date),
+      };
+      setEditableTaskData(editableTaskData);
+    }
+  }, [editableTask, setEditableTaskData]);
 
   return (
     <Modal
@@ -37,12 +53,14 @@ const AddEditTaskModalWithRedux = ({
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          {!editableTask ? "Add Task" : "Edit Task"}
+          {!(editableTask || SingleTaskState.isEditable)
+            ? "Add Task"
+            : "Edit Task"}
         </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        {editableTask && (
+        {(editableTask || SingleTaskState.isEditable) && (
           <Form.Label htmlFor="title" className="mb-2">
             Title
           </Form.Label>
@@ -65,7 +83,7 @@ const AddEditTaskModalWithRedux = ({
           value={title}
           className={styles.input}
         />
-        {editableTask && (
+        {(editableTask || SingleTaskState.isEditable) && (
           <Form.Label htmlFor="description" className="my-2">
             Description
           </Form.Label>
@@ -114,7 +132,7 @@ const AddEditTaskModalWithRedux = ({
           className={styles.addEditButton}
           disabled={!title.trim() || !description.trim()}
         >
-          {!editableTask ? "Add" : "Edit"}
+          {!(editableTask || SingleTaskState.isEditable) ? "Add" : "Edit"}
         </Button>
       </Modal.Footer>
     </Modal>
@@ -122,9 +140,11 @@ const AddEditTaskModalWithRedux = ({
 };
 
 const mapStateToProps = (state) => {
-  const { AddEditTaskModalState } = state;
+  const { AddEditTaskModalState, ToDoState, SingleTaskState } = state;
   return {
     AddEditTaskModalState,
+    ToDoState,
+    SingleTaskState,
   };
 };
 
@@ -138,6 +158,9 @@ const mapDispatchToProps = (dispatch) => {
   const resetData = () => {
     dispatch({ type: types.RESET_MODAL_DATA });
   };
+  const setEditableTaskData = (editableTaskData) => {
+    dispatch({ type: types.SET_EDITABLE_TASK_DATA, editableTaskData });
+  };
   const handleSubmit = (type, key, formData, editableTask, onSubmit) => {
     dispatch(() => submitTask(type, key, formData, editableTask, onSubmit));
   };
@@ -146,19 +169,16 @@ const mapDispatchToProps = (dispatch) => {
     handleChange,
     handleChangeDate,
     resetData,
+    setEditableTaskData,
     handleSubmit,
   };
 };
 
 AddEditTaskModalWithRedux.propTypes = {
-  editableTask: propTypes.oneOfType([
-    propTypes.object.isRequired,
-    propTypes.instanceOf(null).isRequired,
-  ]),
   AddEditTaskModalState: propTypes.shape({
     title: propTypes.string,
     description: propTypes.string,
-    date: propTypes.string,
+    date: propTypes.instanceOf(Date),
   }),
   onSubmit: propTypes.func.isRequired,
   onHide: propTypes.func.isRequired,
@@ -166,6 +186,7 @@ AddEditTaskModalWithRedux.propTypes = {
   handleChangeDate: propTypes.func.isRequired,
   resetData: propTypes.func.isRequired,
   handleSubmit: propTypes.func.isRequired,
+  setEditableTaskData: propTypes.func.isRequired,
 };
 
 export default connect(
