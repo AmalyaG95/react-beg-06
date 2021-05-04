@@ -1,5 +1,5 @@
 import types from "./actionTypes";
-const API_HOST = "http://localhost:3001";
+const API_HOST = process.env.REACT_APP_API_URL;
 
 // ToDo actions
 const getTasksThunk = async (dispatch) => {
