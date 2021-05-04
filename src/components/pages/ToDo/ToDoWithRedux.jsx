@@ -27,7 +27,7 @@ const delSelButtonsColCls = [
   "position-fixed",
   styles.delSelButtons,
 ];
-const noTasksCls = ["align-self-center mt-5", styles.noTasks];
+const noTasksCls = ["mt-5", styles.noTasks];
 
 const ToDoWithRedux = ({
   ToDoState: {
@@ -87,7 +87,7 @@ const ToDoWithRedux = ({
 
   return (
     <>
-      <Container className={ContainerCls} fluid>
+      <Container className={ContainerCls.join(" ")} fluid>
         <Row>
           <Col style={{ textAlign: "center" }}>
             <Button
@@ -104,10 +104,10 @@ const ToDoWithRedux = ({
             <Search />
           </Col>
         </Row>
-        <Row className="mt-1 mb-5 justify-content-center">
+        <Row className="mt-1 mb-5 justify-content-center align-items-center">
           {!!tasksJSX.length && tasksJSX}
           {isRequestEnded && !tasksJSX.length && (
-            <Col className={noTasksCls.join(" ")}> NO TASKS !</Col>
+            <Col className={noTasksCls.join(" ")}>NO TASKS !</Col>
           )}
         </Row>
         {!!selectedTasksIDs.size && (

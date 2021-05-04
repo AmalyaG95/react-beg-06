@@ -284,7 +284,7 @@ class ToDo extends React.Component {
 
     return (
       <>
-        <Container className={ContainerCls}>
+        <Container className={ContainerCls.join(" ")}>
           <Row>
             <Col>
               <Button

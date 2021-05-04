@@ -118,7 +118,7 @@ export const Search = ({
           value={search}
           onChange={(e) => handleChangeSearch(e.target.value)}
           onKeyPress={({ type, key }) => handleSubmit(type, key, SearchState)}
-          className={searchCls}
+          className={searchCls.join(" ")}
         />
         <Button
           variant="info"
@@ -133,7 +133,7 @@ export const Search = ({
           />
         </Button>
       </Form.Group>
-      <Form.Group className={wrapperCls}>
+      <Form.Group className={wrapperCls.join(" ")}>
         <Form.Group className="d-flex">
           <DropdownButton
             variant="light"
@@ -180,7 +180,7 @@ export const Search = ({
           </Button>
         </Form.Group>
 
-        <Form.Group className={dateFilterCls}>
+        <Form.Group className={dateFilterCls.join(" ")}>
           <Form.Group>
             <Form.Label className={styles.label} htmlFor="create_lte">
               Created before

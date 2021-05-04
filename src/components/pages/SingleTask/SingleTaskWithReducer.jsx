@@ -136,7 +136,7 @@ const SingleTaskWithReducer = ({ match, history }) => {
       {!singleTask ? (
         <Spinner />
       ) : (
-        <Container className={ContainerCls}>
+        <Container className={ContainerCls.join(" ")}>
           <Row className={styles.singleTaskSection}>
             <Col>
               <Card className={styles.card}>

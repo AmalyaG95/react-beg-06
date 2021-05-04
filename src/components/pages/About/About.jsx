@@ -6,7 +6,7 @@ const ContainerCls = ["d-flex flex-column my-4 p-5", styles.container];
 
 const About = () => {
   return (
-    <Container className={ContainerCls}>
+    <Container className={ContainerCls.join(" ")}>
       <Row className=" justify-content-center">
         <Col className="d-flex flex-column align-items-center">
           <h1>Amalya Ghazaryan</h1>

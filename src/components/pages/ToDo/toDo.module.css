@@ -42,6 +42,7 @@ div.select {
 }
 
 .noTasks {
+  text-align: center;
   color: white;
   font-weight: 800;
   font-size: 35px;

@@ -15,14 +15,14 @@ const formCls = ["justify-content-center", "mt-3", styles.form];
 
 const Contact = (props) => {
   return (
-    <Container className={ContainerCls}>
+    <Container className={ContainerCls.join(" ")}>
       <Row>
         <Col>
           <h1> CONTACT FORM </h1>
         </Col>
       </Row>
 
-      <Row className={formCls}>
+      <Row className={formCls.join(" ")}>
         <Col>
           <ContactFormWithRedux history={props.history} />
         </Col>
