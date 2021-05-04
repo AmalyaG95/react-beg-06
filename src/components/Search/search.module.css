@@ -1,0 +1,51 @@
+.search {
+  border-top-right-radius: 0%;
+  border-bottom-right-radius: 0%;
+}
+
+.search:focus {
+  border: 1px solid #1b8d8d;
+  box-shadow: 0 0 0 0.1rem rgb(79, 173, 173);
+}
+
+.searchButton {
+  border: none;
+  border-top-left-radius: 0%;
+  border-bottom-left-radius: 0%;
+  padding: 0 20px;
+  background-color: rgb(27, 141, 141);
+  color: white;
+}
+
+.searchButton:hover {
+  background-color: rgb(49, 179, 179);
+  border: none;
+}
+
+.searchButton:focus {
+  background-color: rgb(27, 141, 141);
+  border: none;
+  box-shadow: none;
+}
+
+.wrapper {
+  background-color: rgba(27, 141, 141, 0.5);
+  border-radius: 5px;
+}
+
+.item:hover {
+  color: rgb(5, 112, 112);
+}
+
+.dateFilter {
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
+
+.label {
+  display: inline-block;
+  width: 200px;
+  margin-right: 5px 0;
+  text-align: right;
+}

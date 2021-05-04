@@ -6,6 +6,7 @@ import ToDoReducer from "./reducers/ToDoReducer";
 import SingleTaskReducer from "./reducers/SingleTaskReducer";
 import ContactFormReducer from "./reducers/ContactFormReducer";
 import AddEditTaskModalReducer from "./reducers/AddEditTaskModalReducer";
+import SearchReducer from "./reducers/SearchReducer";
 
 const reducer = combineReducers({
   globalState: globalReducer,
@@ -13,6 +14,9 @@ const reducer = combineReducers({
   SingleTaskState: SingleTaskReducer,
   ContactFormState: ContactFormReducer,
   AddEditTaskModalState: AddEditTaskModalReducer,
+  SearchState: SearchReducer,
 });
 
-export const store = createStore(reducer, applyMiddleware(thunk, logger));
+const middlewares = [thunk, logger];
+
+export const store = createStore(reducer, applyMiddleware(...middlewares));

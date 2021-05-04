@@ -159,7 +159,7 @@ const SingleTaskWithReducer = ({ match, history }) => {
                     <Button
                       variant="light"
                       onClick={handleDelete}
-                      className={styles.deleteButton}
+                      className="deleteButton"
                     >
                       <FontAwesomeIcon
                         icon={faTrash}
@@ -169,7 +169,7 @@ const SingleTaskWithReducer = ({ match, history }) => {
                     <Button
                       variant="light"
                       onClick={toggleHideAddEditTaskModal}
-                      className={styles.editButton}
+                      className="editButton"
                     >
                       <FontAwesomeIcon
                         icon={faEdit}

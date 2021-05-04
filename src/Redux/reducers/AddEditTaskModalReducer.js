@@ -1,4 +1,4 @@
-import types from "../actionsType";
+import types from "../actionTypes";
 
 const initialState = {
   title: "",
@@ -7,10 +7,10 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  const { editableTaskData } = action;
-
   switch (action.type) {
     case types.SET_EDITABLE_TASK_DATA: {
+      const { editableTaskData } = action;
+
       return {
         ...(editableTaskData ? editableTaskData : state),
       };
@@ -26,7 +26,7 @@ const reducer = (state = initialState, action) => {
     case types.CHANGE_DATE: {
       return {
         ...state,
-        date: action.e,
+        date: action.date,
       };
     }
     case types.RESET_MODAL_DATA: {

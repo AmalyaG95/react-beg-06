@@ -8,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 import App from "./App";
-import "./Redux/store";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(

@@ -2,6 +2,7 @@
   border-radius: 5px;
   padding: 8px 30px 8px 15px;
   height: 40px;
+  box-shadow: 0px 0px 15px teal;
 }
 
 .input:focus {
@@ -10,6 +11,8 @@
 }
 
 .button {
+  text-align: center;
+  width: 100px;
   border: none;
   height: 40px;
   margin: 15px;
@@ -43,4 +46,17 @@
   font-size: 12px;
   min-height: 12px;
   margin: 5px 10px 0;
+}
+
+.faCheck {
+  font-size: 15px;
+  color: rgb(5, 112, 112);
+}
+
+.faExclamationCircle {
+  font-size: 15px;
+}
+
+.faHidden {
+  visibility: hidden;
 }

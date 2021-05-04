@@ -2,8 +2,23 @@
   background-color: white;
   min-width: 120px;
 }
+.item {
+  text-align: center;
+  width: 130px;
+}
+
+@media only screen and (max-width: 475px) {
+  .Nav {
+    width: 140px;
+  }
+  .item {
+    border-top: 1px solid white;
+  }
+}
 
 .NavLink {
+  display: inline-block;
+  width: 130px;
   color: rgb(27, 141, 141);
   text-decoration: none;
   font-size: 20px;

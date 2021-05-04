@@ -111,4 +111,4 @@ App.propTypes = {
 
 export default connect(mapStateToProps, null)(App);
 
-// 1. TaskModal կոմպոնենտը սարքել Redux-ով է
+// Հարցումով ստանում ենք նոր Task երը Filter կամ Sort եղած և նկարում դրանք

@@ -26,24 +26,6 @@
   margin-bottom: 30px;
 }
 
-.deleteButton,
-.editButton {
-  width: 35px;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.deleteButton {
-  background-color: white;
-}
-
-.editButton {
-  background-color: rgb(35, 155, 133);
-  margin-left: 10px;
-}
-
 .loading {
   color: white;
   font-weight: 800;

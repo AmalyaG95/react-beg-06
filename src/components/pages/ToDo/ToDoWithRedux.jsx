@@ -3,11 +3,12 @@ import { connect } from "react-redux";
 import styles from "./toDo.module.css";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import Task from "../../Task/Task";
+import Search from "../../Search/Search";
 import AddEditTaskModalWithRedux from "../../AddEditTaskModal/AddEditTaskModalWithRedux";
 import Spinner from "../../Spinner/Spinner";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import propTypes from "prop-types";
-import types from "../../../Redux/actionsType";
+import types from "../../../Redux/actionTypes";
 import {
   getTasksThunk,
   addTaskThunk,
@@ -36,6 +37,7 @@ const ToDoWithRedux = ({
     isOpenConfirmModal,
     editableTask,
     selectedSingleTask,
+    isRequestEnded,
   },
   loading,
   // functions
@@ -44,7 +46,7 @@ const ToDoWithRedux = ({
   toggleSetEditableTask,
   selectTask,
   selectAllTasks,
-  changeTaskStatus,
+  handleChangeTaskStatus,
   resetData,
   getTasks,
   handleAddTask,
@@ -70,7 +72,7 @@ const ToDoWithRedux = ({
           task={task}
           handleDeleteTask={handleDeleteTask}
           handleSelectTask={selectTask}
-          handleChangeStatus={changeTaskStatus}
+          handleChangeTaskStatus={handleChangeTaskStatus}
           setEditableTask={toggleSetEditableTask}
           onHide={toggleHideAddEditTaskModal}
           isChecked={selectedTasksIDs.has(task._id)}
@@ -85,9 +87,9 @@ const ToDoWithRedux = ({
 
   return (
     <>
-      <Container className={ContainerCls}>
+      <Container className={ContainerCls} fluid>
         <Row>
-          <Col>
+          <Col style={{ textAlign: "center" }}>
             <Button
               variant="info"
               onClick={toggleHideAddEditTaskModal}
@@ -97,48 +99,46 @@ const ToDoWithRedux = ({
             </Button>
           </Col>
         </Row>
-
+        <Row>
+          <Col>
+            <Search />
+          </Col>
+        </Row>
         <Row className="mt-1 mb-5 justify-content-center">
-          {/* {!!tasksJSX.length && tasksJSX} */}
-          {/* {!loading && !tasksJSX.length &&  */}
-          {!!tasksJSX.length ? (
-            tasksJSX
-          ) : loading ? (
-            ""
-          ) : (
+          {!!tasksJSX.length && tasksJSX}
+          {isRequestEnded && !tasksJSX.length && (
             <Col className={noTasksCls.join(" ")}> NO TASKS !</Col>
           )}
         </Row>
-
-        <Row className="justify-content-center">
-          <Col className={delSelButtonsColCls.join(" ")}>
-            <div className={styles.select}>
-              <label htmlFor="selectAll" className="mr-2">
-                Select All
-              </label>
-              <input
-                type="checkbox"
-                id="selectAll"
-                onChange={selectAllTasks}
-                checked={tasks.length && selectedTasksIDs.size === tasks.length}
-                disabled={!tasks.length}
-              />
-            </div>
-            <Button
-              variant="danger"
-              onClick={toggleHideConfirmModal}
-              disabled={!selectedTasksIDs.size}
-            >
-              Delete All Selected
-            </Button>
-          </Col>
-        </Row>
+        {!!selectedTasksIDs.size && (
+          <Row className="justify-content-center">
+            <Col className={delSelButtonsColCls.join(" ")}>
+              <div className={styles.select}>
+                <label htmlFor="selectAll" className="mr-2">
+                  Select All
+                </label>
+                <input
+                  type="checkbox"
+                  id="selectAll"
+                  onChange={selectAllTasks}
+                  checked={
+                    tasks.length && selectedTasksIDs.size === tasks.length
+                  }
+                />
+              </div>
+              <Button variant="danger" onClick={toggleHideConfirmModal}>
+                Delete All Selected
+              </Button>
+            </Col>
+          </Row>
+        )}
       </Container>
 
       {isOpenAddEditTaskModal && (
         <AddEditTaskModalWithRedux
+          editableTask={editableTask}
           onSubmit={editableTask ? handleEditTask : handleAddTask}
-          onHide={toggleHideAddEditTaskModal}
+          onHide={() => toggleHideAddEditTaskModal(editableTask)}
         />
       )}
 
@@ -158,6 +158,28 @@ const ToDoWithRedux = ({
   );
 };
 
+ToDoWithRedux.propTypes = {
+  tasks: propTypes.array,
+  selectedTasksIDs: propTypes.instanceOf(Set),
+  isOpenAddEditTaskModal: propTypes.bool,
+  isOpenConfirmModal: propTypes.bool,
+  editableTask: propTypes.object,
+  selectedSingleTask: propTypes.object,
+  loading: propTypes.bool.isRequired,
+  toggleHideAddEditTaskModal: propTypes.func.isRequired,
+  toggleHideConfirmModal: propTypes.func.isRequired,
+  toggleSetEditableTask: propTypes.func.isRequired,
+  selectTask: propTypes.func.isRequired,
+  selectAllTasks: propTypes.func.isRequired,
+  handleChangeTaskStatus: propTypes.func.isRequired,
+  resetData: propTypes.func.isRequired,
+  getTasks: propTypes.func.isRequired,
+  handleAddTask: propTypes.func.isRequired,
+  handleEditTask: propTypes.func.isRequired,
+  handleDeleteTask: propTypes.func.isRequired,
+  handleDeleteSelectedTasks: propTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => {
   const {
     ToDoState,
@@ -171,8 +193,10 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  const toggleHideAddEditTaskModal = () => {
+  const toggleHideAddEditTaskModal = (editableTask) => {
     dispatch({ type: types.SET_IS_OPEN_TASK_MODAL });
+    if (editableTask)
+      dispatch({ type: types.SET_EDITABLE_TASK, editableTask: null });
   };
   const toggleHideConfirmModal = () => {
     dispatch({ type: types.SET_IS_OPEN_CONFIRM_MODAL });
@@ -186,8 +210,8 @@ const mapDispatchToProps = (dispatch) => {
   const selectAllTasks = (_id) => {
     dispatch({ type: types.SELECT_ALL_TASKS, _id });
   };
-  const changeTaskStatus = (task) => {
-    dispatch(() => changeTaskStatusThunk(dispatch, task));
+  const handleChangeTaskStatus = (task) => {
+    dispatch(() => changeTaskStatusThunk(dispatch, task, "ToDo"));
   };
   const resetData = () => {
     dispatch({ type: types.RESET_TODO_DATA });
@@ -199,7 +223,9 @@ const mapDispatchToProps = (dispatch) => {
     dispatch(() => addTaskThunk(dispatch, newTaskData));
   };
   const handleEditTask = (editableTaskData, editableTask) => {
-    dispatch(() => editTaskThunk(dispatch, editableTask, editableTaskData));
+    dispatch(() =>
+      editTaskThunk(dispatch, editableTaskData, editableTask, "ToDo")
+    );
   };
   const handleDeleteTask = (_id) => {
     dispatch(() => deleteTaskThunk(dispatch, _id));
@@ -214,7 +240,7 @@ const mapDispatchToProps = (dispatch) => {
     toggleSetEditableTask,
     selectTask,
     selectAllTasks,
-    changeTaskStatus,
+    handleChangeTaskStatus,
     resetData,
     getTasks,
     handleAddTask,
@@ -222,28 +248,6 @@ const mapDispatchToProps = (dispatch) => {
     handleDeleteTask,
     handleDeleteSelectedTasks,
   };
-};
-
-ToDoWithRedux.propTypes = {
-  tasks: propTypes.array,
-  selectedTasksIDs: propTypes.instanceOf(Set),
-  isOpenAddEditTaskModal: propTypes.bool,
-  isOpenConfirmModal: propTypes.bool,
-  editableTask: propTypes.object,
-  selectedSingleTask: propTypes.object,
-  loading: propTypes.bool.isRequired,
-  toggleHideAddEditTaskModal: propTypes.func.isRequired,
-  toggleHideConfirmModal: propTypes.func.isRequired,
-  toggleSetEditableTask: propTypes.func.isRequired,
-  selectTask: propTypes.func.isRequired,
-  selectAllTasks: propTypes.func.isRequired,
-  changeTaskStatus: propTypes.func.isRequired,
-  resetData: propTypes.func.isRequired,
-  getTasks: propTypes.func.isRequired,
-  handleAddTask: propTypes.func.isRequired,
-  handleEditTask: propTypes.func.isRequired,
-  handleDeleteTask: propTypes.func.isRequired,
-  handleDeleteSelectedTasks: propTypes.func.isRequired,
 };
 
 export default connect(

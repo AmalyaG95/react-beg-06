@@ -3,16 +3,21 @@ import { connect } from "react-redux";
 import styles from "./singleTask.module.css";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faEdit,
+  faCheck,
+  faHourglassHalf,
+} from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../../Spinner/Spinner";
 import AddEditTaskModalWithRedux from "../../AddEditTaskModal/AddEditTaskModalWithRedux";
 import propTypes from "prop-types";
-import types from "../../../Redux/actionsType";
+import types from "../../../Redux/actionTypes";
 import {
   getSingleTaskThunk,
-  deleteSingleTaskThunk,
-  editSingleTaskThunk,
-  goBackThunk,
+  deleteTaskThunk,
+  editTaskThunk,
+  changeTaskStatusThunk,
 } from "../../../Redux/actions";
 
 const ContainerCls = [
@@ -40,15 +45,19 @@ const SingleTaskWithRedux = ({
   getSingleTask,
   handleDelete,
   handleEdit,
-  goBack,
+  handleChangeTaskStatus,
 }) => {
   useEffect(() => {
-    getSingleTask(history, match);
+    getSingleTask(history, match.params.id);
 
     return () => {
       resetData();
     };
-  }, [history, match, getSingleTask, resetData]);
+  }, [history, match.params.id, getSingleTask, resetData]);
+
+  const handleChange = () => {
+    handleChangeTaskStatus(singleTask);
+  };
 
   return (
     <>
@@ -72,13 +81,18 @@ const SingleTaskWithRedux = ({
                     {singleTask.description}
                   </Card.Text>
                   <Card.Text className={styles.date}>
-                    Date: {singleTask.date.slice(0, 10).split("-").join(".")}
+                    Date:{" "}
+                    {singleTask.date
+                      .slice(0, 10)
+                      .split("-")
+                      .reverse()
+                      .join(".")}
                   </Card.Text>
                   <Card.Footer className="d-flex">
                     <Button
                       variant="light"
-                      onClick={() => handleDelete(history, match)}
-                      className={styles.deleteButton}
+                      onClick={() => handleDelete(match.params.id, history)}
+                      className="deleteButton"
                     >
                       <FontAwesomeIcon
                         icon={faTrash}
@@ -88,11 +102,27 @@ const SingleTaskWithRedux = ({
                     <Button
                       variant="light"
                       onClick={toggleHideAddEditTaskModal}
-                      className={styles.editButton}
+                      className="editButton"
                     >
                       <FontAwesomeIcon
                         icon={faEdit}
                         style={{ fontSize: "15px" }}
+                      />
+                    </Button>
+                    <Button
+                      variant={"light"}
+                      onClick={handleChange}
+                      className="editButton"
+                    >
+                      <FontAwesomeIcon
+                        icon={
+                          singleTask.status === "done"
+                            ? faCheck
+                            : faHourglassHalf
+                        }
+                        style={{
+                          fontSize: "15px",
+                        }}
                       />
                     </Button>
                   </Card.Footer>
@@ -105,7 +135,7 @@ const SingleTaskWithRedux = ({
             <Col>
               <Button
                 variant="secondary"
-                onClick={() => goBack(history)}
+                onClick={() => history.goBack()}
                 style={{ marginTop: "20px" }}
               >
                 Go Back
@@ -126,6 +156,19 @@ const SingleTaskWithRedux = ({
   );
 };
 
+SingleTaskWithRedux.propTypes = {
+  history: propTypes.object.isRequired,
+  match: propTypes.object.isRequired,
+  singleTask: propTypes.object,
+  isEditable: propTypes.bool,
+  loading: propTypes.bool.isRequired,
+  toggleHideAddEditTaskModal: propTypes.func.isRequired,
+  resetData: propTypes.func.isRequired,
+  getSingleTask: propTypes.func.isRequired,
+  handleDelete: propTypes.func.isRequired,
+  handleEdit: propTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => {
   const {
     SingleTaskState,
@@ -138,46 +181,33 @@ const mapStateToProps = (state) => {
   };
 };
 const mapDispatchToProps = (dispatch) => {
-  const toggleHideAddEditTaskModal = () => {
+  const toggleHideAddEditTaskModal = () =>
     dispatch({ type: types.TOGGLE_HIDE_MODAL });
-  };
-  const resetData = () => {
-    dispatch({ type: types.RESET_SINGLE_TASK_DATA });
-  };
-  const getSingleTask = (history, match) => {
-    dispatch(() => getSingleTaskThunk(dispatch, history, match));
-  };
-  const handleDelete = (history, match) => {
-    dispatch(() => deleteSingleTaskThunk(dispatch, history, match));
-  };
-  const handleEdit = (editableTask, singleTask) => {
-    dispatch(() => editSingleTaskThunk(dispatch, singleTask, editableTask));
-  };
-  const goBack = (history) => {
-    dispatch(() => goBackThunk(history));
-  };
+
+  const getSingleTask = (history, _id) =>
+    dispatch(() => getSingleTaskThunk(dispatch, history, _id));
+
+  const handleDelete = (_id, history) =>
+    dispatch(() => deleteTaskThunk(dispatch, _id, history));
+
+  const handleEdit = (editableTaskData, editableTask) =>
+    dispatch(() =>
+      editTaskThunk(dispatch, editableTaskData, editableTask, "SingleTask")
+    );
+
+  const handleChangeTaskStatus = (task) =>
+    dispatch(() => changeTaskStatusThunk(dispatch, task, "SingleTask"));
+
+  const resetData = () => dispatch({ type: types.RESET_SINGLE_TASK_DATA });
+
   return {
     toggleHideAddEditTaskModal,
     resetData,
     getSingleTask,
     handleDelete,
     handleEdit,
-    goBack,
+    handleChangeTaskStatus,
   };
-};
-
-SingleTaskWithRedux.propTypes = {
-  history: propTypes.object.isRequired,
-  match: propTypes.object.isRequired,
-  singleTask: propTypes.object,
-  isEditable: propTypes.bool,
-  loading: propTypes.bool.isRequired,
-  toggleHideAddEditTaskModal: propTypes.func.isRequired,
-  resetData: propTypes.func.isRequired,
-  getSingleTask: propTypes.func.isRequired,
-  handleDelete: propTypes.func.isRequired,
-  handleEdit: propTypes.func.isRequired,
-  goBack: propTypes.func.isRequired,
 };
 
 export default connect(

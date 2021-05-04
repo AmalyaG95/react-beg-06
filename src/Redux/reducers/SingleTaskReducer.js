@@ -1,4 +1,4 @@
-import types from "../actionsType";
+import types from "../actionTypes";
 
 const initialState = {
   singleTask: null,

@@ -3,26 +3,25 @@ import { connect } from "react-redux";
 import styles from "./addEditTaskModal.module.css";
 import { Modal, Button, Form } from "react-bootstrap";
 import propTypes from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
-import types from "../../Redux/actionsType";
-import { submitTask } from "../../Redux/actions";
+import types from "../../Redux/actionTypes";
+import formatDate from "../../utils/formatDate";
 
 const AddEditTaskModalWithRedux = ({
-  ToDoState,
   SingleTaskState,
   AddEditTaskModalState,
   AddEditTaskModalState: { title, description, date },
+  editableTask,
   onHide,
   onSubmit,
   handleChange,
   handleChangeDate,
   resetData,
-  handleSubmit,
   setEditableTaskData,
 }) => {
   const titleInputRef = useRef();
-  const editableTask =
-    ToDoState.editableTask ?? SingleTaskState.singleTask ?? null;
 
   useEffect(() => {
     titleInputRef.current.focus();
@@ -43,8 +42,23 @@ const AddEditTaskModalWithRedux = ({
     }
   }, [editableTask, setEditableTaskData]);
 
+  const handleSubmit = ({ key, type }) => {
+    if (
+      !title.trim() ||
+      !description.trim() ||
+      (type === "keypress" && key !== "Enter")
+    )
+      return;
+
+    onSubmit(
+      { ...AddEditTaskModalState, date: formatDate(date) },
+      editableTask
+    );
+  };
+
   return (
     <Modal
+      className={styles.modal}
       show={true}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
@@ -66,19 +80,12 @@ const AddEditTaskModalWithRedux = ({
           </Form.Label>
         )}
         <Form.Control
+          id="title"
           type="text"
           name="title"
           placeholder="Title"
           onChange={(e) => handleChange(e)}
-          onKeyPress={({ type, key }) =>
-            handleSubmit(
-              type,
-              key,
-              AddEditTaskModalState,
-              editableTask,
-              onSubmit
-            )
-          }
+          onKeyPress={handleSubmit}
           ref={titleInputRef}
           value={title}
           className={styles.input}
@@ -89,25 +96,32 @@ const AddEditTaskModalWithRedux = ({
           </Form.Label>
         )}
         <Form.Control
+          id="description"
           as="textarea"
           name="description"
           placeholder="Description"
           rows={3}
-          onChange={(e) => handleChange(e)}
-          onKeyPress={({ type, key }) =>
-            handleSubmit(
-              type,
-              key,
-              AddEditTaskModalState,
-              editableTask,
-              onSubmit
-            )
-          }
+          onChange={handleChange}
+          onKeyPress={handleSubmit}
           value={description}
           className={styles.input}
           style={{ resize: "none" }}
         />
-        <DatePicker selected={date} onChange={(e) => handleChangeDate(e)} />
+        <Form.Label htmlFor="date" className="my-2 px-2">
+          <FontAwesomeIcon
+            icon={faCalendarDay}
+            style={{
+              fontSize: "15px",
+              color: " rgb(5, 112, 112)",
+            }}
+          />
+        </Form.Label>
+        <DatePicker
+          id="date"
+          placeholderText="MM/DD/YY"
+          selected={date}
+          onChange={handleChangeDate}
+        />
       </Modal.Body>
 
       <Modal.Footer>
@@ -120,15 +134,7 @@ const AddEditTaskModalWithRedux = ({
         </Button>
         <Button
           variant="info"
-          onClick={({ type, key }) =>
-            handleSubmit(
-              type,
-              key,
-              AddEditTaskModalState,
-              editableTask,
-              onSubmit
-            )
-          }
+          onClick={handleSubmit}
           className={styles.addEditButton}
           disabled={!title.trim() || !description.trim()}
         >
@@ -148,32 +154,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  const handleChange = (e) => {
-    dispatch({ type: types.CHANGE_TASK, e });
-  };
-  const handleChangeDate = (e) => {
-    dispatch({ type: types.CHANGE_DATE, e });
-  };
-  const resetData = () => {
-    dispatch({ type: types.RESET_MODAL_DATA });
-  };
-  const setEditableTaskData = (editableTaskData) => {
-    dispatch({ type: types.SET_EDITABLE_TASK_DATA, editableTaskData });
-  };
-  const handleSubmit = (type, key, formData, editableTask, onSubmit) => {
-    dispatch(() => submitTask(type, key, formData, editableTask, onSubmit));
-  };
-
-  return {
-    handleChange,
-    handleChangeDate,
-    resetData,
-    setEditableTaskData,
-    handleSubmit,
-  };
-};
-
 AddEditTaskModalWithRedux.propTypes = {
   AddEditTaskModalState: propTypes.shape({
     title: propTypes.string,
@@ -185,8 +165,29 @@ AddEditTaskModalWithRedux.propTypes = {
   handleChange: propTypes.func.isRequired,
   handleChangeDate: propTypes.func.isRequired,
   resetData: propTypes.func.isRequired,
-  handleSubmit: propTypes.func.isRequired,
   setEditableTaskData: propTypes.func.isRequired,
+};
+
+const mapDispatchToProps = (dispatch) => {
+  const handleChange = (e) => {
+    dispatch({ type: types.CHANGE_TASK, e });
+  };
+  const handleChangeDate = (date) => {
+    dispatch({ type: types.CHANGE_DATE, date });
+  };
+  const resetData = () => {
+    dispatch({ type: types.RESET_MODAL_DATA });
+  };
+  const setEditableTaskData = (editableTaskData) => {
+    dispatch({ type: types.SET_EDITABLE_TASK_DATA, editableTaskData });
+  };
+
+  return {
+    handleChange,
+    handleChangeDate,
+    resetData,
+    setEditableTaskData,
+  };
 };
 
 export default connect(

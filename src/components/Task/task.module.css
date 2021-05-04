@@ -1,11 +1,17 @@
 .task {
-  width: 500px;
-  min-width: 500px;
-  min-height: 70px;
+  width: 550px;
+  min-width: 200px;
+  min-height: 60px;
   border: 1px solid teal;
   border-radius: 10px;
   background-color: rgb(55, 221, 185);
   color: white;
+}
+
+@media only screen and (max-width: 560px) {
+  .task {
+    width: 100%;
+  }
 }
 
 .task:hover {
@@ -17,22 +23,10 @@
   background-color: rgb(125, 238, 214);
 }
 
-.deleteButton,
-.editButton {
-  width: 35px;
-  height: 35px;
-  margin-left: 10px;
+.wrapper {
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-.deleteButton {
-  background-color: white;
-}
-
-.editButton {
-  background-color: rgb(35, 155, 133);
+  margin-bottom: 10px;
 }
 
 .Link {

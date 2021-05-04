@@ -1,9 +1,8 @@
 .App {
-  text-align: center;
   width: 100%;
   background-color: rgb(118, 219, 192);
   background-image: url("./assets/images/todo.png");
-  background-size: 65%;
+  background-size: 544px 345px;
   background-attachment: fixed;
   background-repeat: repeat;
   min-height: 100vh;
@@ -11,6 +10,8 @@
   flex-flow: column wrap;
   align-content: center;
   font-size: calc(5px + 2vmin);
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 header {
@@ -29,6 +30,12 @@ main {
   min-height: 89vh;
 }
 
+h1 {
+  font-size: calc(15px + 2vmin);
+  color: rgb(255, 255, 255);
+  font-weight: 800;
+}
+
 input[type="checkbox"] {
   border: 2px solid black;
   width: 20px;
@@ -36,8 +43,43 @@ input[type="checkbox"] {
   margin: 0 0 0 10px;
 }
 
-h1 {
-  font-size: calc(15px + 2vmin);
-  color: rgb(255, 255, 255);
-  font-weight: 800;
+div.react-datepicker__input-container input {
+  width: 60%;
+  min-width: 100px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  border: 1px solid #7ba0a0;
+}
+
+div.react-datepicker__input-container input:focus {
+  border: 1px solid #1b8d8d;
+  box-shadow: 0 0 0 0.1rem rgb(79, 173, 173);
+}
+
+.deleteButton,
+.editButton {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.deleteButton {
+  background-color: white;
+}
+
+.editButton {
+  background-color: rgb(35, 155, 133);
+  margin-left: 10px;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: teal;
+}
+
+.react-datepicker__day--selected:hover,
+.react-datepicker__day--keyboard-selected:hover {
+  background-color: rgb(21, 172, 172);
 }

@@ -13,6 +13,7 @@ import propTypes from "prop-types";
 
 const CardBodyCls = [
   "d-flex",
+  "flex-wrap",
   "align-items-center",
   "justify-content-between",
   "m-1",
@@ -25,7 +26,7 @@ const Task = ({
   isAllChecked,
   handleDeleteTask,
   handleSelectTask,
-  handleChangeStatus,
+  handleChangeTaskStatus,
   setEditableTask,
   onHide,
 }) => {
@@ -42,14 +43,14 @@ const Task = ({
     onHide();
   };
   const handleChange = () => {
-    handleChangeStatus(task);
+    handleChangeTaskStatus(task);
   };
 
   return (
     <>
       <Card className={`${styles.task} ${isChecked && styles.selectedTask}`}>
         <Card.Body className={CardBodyCls.join(" ")}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div className={styles.wrapper}>
             <input
               type="checkbox"
               onChange={handleSelect}
@@ -64,7 +65,7 @@ const Task = ({
             <Button
               variant="light"
               onClick={handleDelete}
-              className={styles.deleteButton}
+              className="deleteButton"
               disabled={isAnyChecked}
             >
               <FontAwesomeIcon icon={faTrash} style={{ fontSize: "15px" }} />
@@ -72,7 +73,7 @@ const Task = ({
             <Button
               variant="light"
               onClick={handleEdit}
-              className={styles.editButton}
+              className="editButton"
               disabled={isAnyChecked}
             >
               <FontAwesomeIcon icon={faEdit} style={{ fontSize: "15px" }} />
@@ -80,25 +81,15 @@ const Task = ({
             <Button
               variant={"light"}
               onClick={handleChange}
-              className={styles.deleteButton}
+              className="editButton"
               disabled={isAnyChecked}
             >
-              {task.status === "done" ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  style={{
-                    fontSize: "15px",
-                    color: " rgb(5, 112, 112)",
-                  }}
-                />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faHourglassHalf}
-                  style={{
-                    fontSize: "15px",
-                  }}
-                />
-              )}
+              <FontAwesomeIcon
+                icon={task.status === "done" ? faCheck : faHourglassHalf}
+                style={{
+                  fontSize: "15px",
+                }}
+              />
             </Button>
           </div>
         </Card.Body>
@@ -119,9 +110,9 @@ Task.propTypes = {
   isAllChecked: propTypes.bool.isRequired,
   handleDeleteTask: propTypes.func.isRequired,
   handleSelectTask: propTypes.func.isRequired,
-  handleChangeStatus: propTypes.func.isRequired,
   setEditableTask: propTypes.func.isRequired,
   onHide: propTypes.func.isRequired,
+  handleChangeTaskStatus: propTypes.func.isRequired,
 };
 
 export default memo(Task);

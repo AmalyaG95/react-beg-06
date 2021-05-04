@@ -1,4 +1,4 @@
-import types from "../actionsType";
+import types from "../actionTypes";
 
 const initialState = {
   tasks: [],
@@ -7,6 +7,7 @@ const initialState = {
   isOpenConfirmModal: false,
   editableTask: null,
   selectedSingleTask: null,
+  isRequestEnded: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -111,6 +112,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         tasks: action.data,
+      };
+    }
+    case types.SET_IS_REQUEST_ENDED: {
+      return {
+        ...state,
+        isRequestEnded: true,
       };
     }
     case types.RESET_TODO_DATA: {

@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../Spinner/Spinner";
 import propTypes from "prop-types";
-import types from "../../Redux/actionsType";
+import types from "../../Redux/actionTypes";
 import { submitContactFormThunk } from "../../Redux/actions";
 
 const inputsInfo = [
@@ -36,11 +36,10 @@ const ContactFormWithRedux = ({
   history,
   ContactFormState,
   ContactFormState: { name, email, message },
-  globalState: { loading, errorMessage, isOpenErrorMessageAlert },
+  loading,
   handleChange,
   resetData,
   handleSubmit,
-  closeErrorMessageAlert,
 }) => {
   const nameInputRef = useRef();
 
@@ -53,6 +52,15 @@ const ContactFormWithRedux = ({
   }, [resetData]);
 
   const inputsJSX = inputsInfo.map((input, index) => {
+    const valid =
+      (name.isValid && input.name === "name") ||
+      (email.isValid && input.name === "email") ||
+      (message.isValid && input.name === "message");
+
+    const invalid =
+      (name.error && input.name === "name") ||
+      (email.error && input.name === "email") ||
+      (message.error && input.name === "message");
     return (
       <div key={index}>
         <Form.Group className="mt-2 mb-1 position-relative">
@@ -69,24 +77,16 @@ const ContactFormWithRedux = ({
             className={styles.input}
           />
           <Form.Text className={styles.valid}>
-            {(name.isValid && input.name === "name") ||
-            (email.isValid && input.name === "email") ||
-            (message.isValid && input.name === "message") ? (
-              <FontAwesomeIcon
-                icon={faCheck}
-                style={{
-                  fontSize: "15px",
-                  color: " rgb(5, 112, 112)",
-                }}
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={faExclamationCircle}
-                style={{
-                  fontSize: "15px",
-                }}
-              />
-            )}
+            <FontAwesomeIcon
+              icon={valid ? faCheck : faExclamationCircle}
+              className={
+                valid
+                  ? styles.faCheck
+                  : invalid
+                  ? styles.faExclamationCircle
+                  : styles.faHidden
+              }
+            />
           </Form.Text>
         </Form.Group>
         <Form.Text className={styles.error}>
@@ -100,25 +100,43 @@ const ContactFormWithRedux = ({
     <>
       <Form noValidate>
         {inputsJSX}
-        <Button
-          variant="info"
-          onClick={() => handleSubmit(history, ContactFormState)}
-          className={styles.button}
-          disabled={!name.isValid || !email.isValid || !message.isValid}
-        >
-          Send
-        </Button>
+        <Form.Group className="d-flex justify-content-center">
+          <Button
+            variant="info"
+            onClick={() => handleSubmit(history, ContactFormState)}
+            className={styles.button}
+            disabled={!name.isValid || !email.isValid || !message.isValid}
+          >
+            Send
+          </Button>
+        </Form.Group>
       </Form>
       {loading && <Spinner />}
     </>
   );
 };
+ContactFormWithRedux.propTypes = {
+  history: propTypes.object.isRequired,
+  ContactFormState: propTypes.shape({
+    name: propTypes.oneOfType([propTypes.object, propTypes.string]),
+    email: propTypes.oneOfType([propTypes.object, propTypes.string]),
+    message: propTypes.oneOfType([propTypes.object, propTypes.string]),
+  }),
+  loading: propTypes.bool,
+  errorMessage: propTypes.string,
+  handleChange: propTypes.func.isRequired,
+  resetData: propTypes.func.isRequired,
+  handleSubmit: propTypes.func.isRequired,
+};
 
 const mapStateToProps = (state) => {
-  const { ContactFormState, globalState } = state;
+  const {
+    ContactFormState,
+    globalState: { loading },
+  } = state;
   return {
     ContactFormState,
-    globalState,
+    loading,
   };
 };
 
@@ -138,20 +156,6 @@ const mapDispatchToProps = (dispatch) => {
     resetData,
     handleSubmit,
   };
-};
-
-ContactFormWithRedux.propTypes = {
-  history: propTypes.object.isRequired,
-  ContactFormState: propTypes.shape({
-    name: propTypes.oneOfType([propTypes.object, propTypes.string]),
-    email: propTypes.oneOfType([propTypes.object, propTypes.string]),
-    message: propTypes.oneOfType([propTypes.object, propTypes.string]),
-  }),
-  loading: propTypes.bool,
-  errorMessage: propTypes.string,
-  handleChange: propTypes.func.isRequired,
-  resetData: propTypes.func.isRequired,
-  handleSubmit: propTypes.func.isRequired,
 };
 
 export default connect(

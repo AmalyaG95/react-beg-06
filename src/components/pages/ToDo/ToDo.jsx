@@ -32,6 +32,7 @@ class ToDo extends React.Component {
     this.setState({
       isOpenAddEditTaskModal: !this.state.isOpenAddEditTaskModal,
     });
+    if (this.state.editableTask) this.toggleSetEditableTask();
   };
 
   toggleHideConfirmModal = () => {

@@ -1,3 +1,4 @@
+import styles from "./contact.module.css";
 import { Container, Row, Col } from "react-bootstrap";
 import ContactFormWithRedux from "../../ContactForm/ContactFormWithRedux";
 import propTypes from "prop-types";
@@ -10,17 +11,18 @@ const ContainerCls = [
   "justify-content-center",
   "py-4",
 ];
+const formCls = ["justify-content-center", "mt-3", styles.form];
 
 const Contact = (props) => {
   return (
     <Container className={ContainerCls}>
       <Row>
         <Col>
-          <h1> CONTACT FORM</h1>
+          <h1> CONTACT FORM </h1>
         </Col>
       </Row>
 
-      <Row className="mt-4 w-50">
+      <Row className={formCls}>
         <Col>
           <ContactFormWithRedux history={props.history} />
         </Col>
